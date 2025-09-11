@@ -58,5 +58,13 @@
     "edu.wpi.first.math.**.proto.*",
     "edu.wpi.first.math.**.struct.*",
     null
-  ]
+  ],
+  "[java]": {
+    "spotlessGradle.format.enable": true,
+    "spotlessGradle.diagnostics.enable": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll.spotlessGradle": true
+    },
+    "editor.defaultFormatter": "richardwillis.vscode-spotless-gradle"
+  }
 }

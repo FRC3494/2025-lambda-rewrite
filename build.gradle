@@ -171,16 +171,15 @@ createVersionFile.dependsOn(eventDeploy)
 project.compileJava.dependsOn(spotlessApply)
 spotless {
   java {
-    target fileTree(".") {
-      include "**/*.java"
-      exclude "**/build/**", "**/build-*/**"
+    target fileTree('.') {
+      include '**/*.java'
+      exclude '**/build/**', '**/build-*/**', '**/bin/**'
     }
     toggleOffOn()
     googleJavaFormat()
     removeUnusedImports()
     trimTrailingWhitespace()
     endWithNewline()
-    leadingTabsToSpaces(2)
   }
   groovyGradle {
     target fileTree(".") {
