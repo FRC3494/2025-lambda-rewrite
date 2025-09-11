@@ -61,10 +61,11 @@
   ],
   "[java]": {
     "spotlessGradle.format.enable": true,
-    "spotlessGradle.diagnostics.enable": true,
+    "spotlessGradle.diagnostics.enable": false,
     "editor.codeActionsOnSave": {
       "source.fixAll.spotlessGradle": "always"
     },
     "editor.defaultFormatter": "richardwillis.vscode-spotless-gradle"
-  }
+  },
+  "better-comments.multilineComments": true
 }
