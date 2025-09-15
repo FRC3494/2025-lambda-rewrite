@@ -52,7 +52,7 @@ public class Elevator extends SubsystemBase {
     followerMotor.configure(
         followerMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-    bottomMagSensor = new DigitalInput(Constants.Elevator.bottomMagSensorDIOChannel);
+    bottomMagSensor = new DigitalInput(Constants.Elevator.bottomMagSensorDioChannel);
   }
 
   @Override

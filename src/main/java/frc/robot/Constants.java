@@ -10,6 +10,7 @@ package frc.robot;
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.RobotConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -133,7 +134,7 @@ public final class Constants {
   }
 
   public static class Elevator {
-    public static final int bottomMagSensorDIOChannel = 9;
+    public static final int bottomMagSensorDioChannel = 9;
 
     public static final int leaderMotorCanId = 12;
     public static final boolean leaderMotorInverted = true;
@@ -151,5 +152,16 @@ public final class Constants {
     public static final double maxVelocity = 0.0;
     public static final double maxAcceleration = 0.0;
     public static final double allowedError = 0.0;
+  }
+
+  public static class LEDs {
+    public static int ledPwmId = 0;
+
+    // Color values: https://docs.revrobotics.com/rev-crossover-products/blinkin/gs/patterns
+    public static double disabledColor = 0.0;
+    public static double noneColor = 0.65; // Solid Orange
+    public static double hasGamepieceColor = 0.75; // Solid Dark Green
+    public static double depositedColor = 0.69; // Solid Yellow
+    public static double intakingColor = 0.59; // Solid Dark Red
   }
 }
