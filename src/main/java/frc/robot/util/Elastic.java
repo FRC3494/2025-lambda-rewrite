@@ -1,3 +1,4 @@
+// @CodeScene(disable-all)
 // Copyright (c) 2023-2025 Gold87 and other Elastic contributors
 // This software can be modified and/or shared under the terms
 // defined by the Elastic license:
@@ -8,6 +9,7 @@ package frc.robot.util;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.PubSubOption;
 import edu.wpi.first.networktables.StringPublisher;

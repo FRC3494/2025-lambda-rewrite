@@ -7,16 +7,18 @@
 
 package frc.robot.subsystems.drive;
 
-import com.revrobotics.REVLibError;
-import com.revrobotics.spark.SparkBase;
-import edu.wpi.first.wpilibj.Notifier;
-import edu.wpi.first.wpilibj.RobotController;
-import frc.robot.Constants;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.function.DoubleSupplier;
+
+import com.revrobotics.REVLibError;
+import com.revrobotics.spark.SparkBase;
+
+import edu.wpi.first.wpilibj.Notifier;
+import edu.wpi.first.wpilibj.RobotController;
+import frc.robot.Constants;
 
 /**
  * Provides an interface for asynchronously reading high-frequency measurements to a set of queues.
@@ -52,6 +54,7 @@ public class SparkOdometryThread {
     }
   }
 
+  // @CodeScene(disable-all)
   /** Registers a Spark signal to be read from the thread. */
   public Queue<Double> registerSignal(SparkBase spark, DoubleSupplier signal) {
     Queue<Double> queue = new ArrayBlockingQueue<>(20);
@@ -79,6 +82,7 @@ public class SparkOdometryThread {
     return queue;
   }
 
+  // @CodeScene(disable-all)
   /** Returns a new queue that returns timestamp values for each sample. */
   public Queue<Double> makeTimestampQueue() {
     Queue<Double> queue = new ArrayBlockingQueue<>(20);
@@ -91,6 +95,7 @@ public class SparkOdometryThread {
     return queue;
   }
 
+  // @CodeScene(disable-all)
   private void run() {
     // Save new data to queues
     Drive.odometryLock.lock();

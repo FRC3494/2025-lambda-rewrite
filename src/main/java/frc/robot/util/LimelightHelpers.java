@@ -1,6 +1,15 @@
+// @CodeScene(disable-all)
 // LimelightHelpers v1.11 (REQUIRES LLOS 2025.0 OR LATER)
 
 package frc.robot.util;
+
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonFormat.Shape;
@@ -8,6 +17,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -20,13 +30,6 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.TimestampedDoubleArray;
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * LimelightHelpers provides static methods and classes for interfacing with Limelight vision
@@ -1428,6 +1431,7 @@ public class LimelightHelpers {
     setLimelightNTDouble(limelightName, "stream", 2);
   }
 
+  // @CodeScene(disable-all)
   /**
    * Sets the crop window for the camera. The crop window in the UI must be completely open.
    *
@@ -1457,6 +1461,7 @@ public class LimelightHelpers {
     setLimelightNTDoubleArray(limelightName, "fiducial_offset_set", entries);
   }
 
+  // @CodeScene(disable-all)
   /**
    * Sets robot orientation values used by MegaTag2 localization algorithm.
    *
@@ -1480,6 +1485,7 @@ public class LimelightHelpers {
         limelightName, yaw, yawRate, pitch, pitchRate, roll, rollRate, true);
   }
 
+  // @CodeScene(disable-all)
   public static void SetRobotOrientation_NoFlush(
       String limelightName,
       double yaw,
@@ -1492,6 +1498,7 @@ public class LimelightHelpers {
         limelightName, yaw, yawRate, pitch, pitchRate, roll, rollRate, false);
   }
 
+  // @CodeScene(disable-all)
   private static void SetRobotOrientation_INTERNAL(
       String limelightName,
       double yaw,
@@ -1586,6 +1593,7 @@ public class LimelightHelpers {
     setLimelightNTDouble(limelightName, "fiducial_downscale_set", d);
   }
 
+  // @CodeScene(disable-all)
   /**
    * Sets the camera pose relative to the robot.
    *
