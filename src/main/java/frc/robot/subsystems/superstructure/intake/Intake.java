@@ -31,7 +31,6 @@ public class Intake extends SubsystemBase {
   @Override
   public void periodic() {
     Logger.recordOutput("Intake/Speed", targetSpeed);
-
     Logger.recordOutput("Intake/Output", intakeMotor.getAppliedOutput());
     Logger.recordOutput("Intake/Current", intakeMotor.getOutputCurrent());
   }

@@ -44,7 +44,6 @@ public class Arm extends SubsystemBase {
   @Override
   public void periodic() {
     Logger.recordOutput("Arm/TargetPosition", targetPosition);
-
     Logger.recordOutput("Arm/Position", getPosition());
     Logger.recordOutput("Arm/Output", armMotor.getAppliedOutput());
     Logger.recordOutput("Arm/Current", armMotor.getOutputCurrent());

@@ -20,9 +20,9 @@ public class Elevator extends SubsystemBase {
   private SparkMax followerMotor;
   private SparkMaxConfig followerMotorConfig;
 
-  private DigitalInput bottomMagSensor;
-
   private double targetPosition = 0.0;
+
+  private DigitalInput bottomMagSensor;
 
   public Elevator() {
     leaderMotor = new SparkMax(Constants.Elevator.leaderMotorCanId, MotorType.kBrushless);
@@ -65,7 +65,6 @@ public class Elevator extends SubsystemBase {
     }
 
     Logger.recordOutput("Elevator/TargetPosition", targetPosition);
-
     Logger.recordOutput("Elevator/LeaderPosition", leaderMotor.getEncoder().getPosition());
     Logger.recordOutput("Elevator/FollowerPosition", followerMotor.getEncoder().getPosition());
     Logger.recordOutput("Elevator/LeaderOutput", leaderMotor.getAppliedOutput());

@@ -10,7 +10,6 @@ package frc.robot;
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.RobotConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -179,6 +178,33 @@ public final class Constants {
     public static final boolean intakeMotorInverted = false;
     public static final IdleMode intakeMotorIdleMode = IdleMode.kBrake;
     public static final int intakeMotorCurrentLimit = 30;
+  }
+
+  public static class GroundIntake {
+    public static final int pivotMotorCanId = 7;
+    public static final boolean pivotMotorInverted = false;
+    public static final IdleMode pivotMotorIdleMode = IdleMode.kBrake;
+    public static final int pivotMotorCurrentLimit = 45;
+
+    public static final double pivotkP = 8.0;
+    public static final double pivotkI = 0.0;
+    public static final double pivotkD = 0.0;
+    public static final double pivotOutputRange = 1.0;
+    public static final double pivotMaxVelocity = 0.0;
+    public static final double pivotMaxAcceleration = 0.0;
+    public static final double pivotAllowedError = 0.0;
+
+    public static final int frontIntakeMotorCanId = 11;
+    public static final boolean frontIntakeMotorInverted = false;
+
+    public static final int backIntakeMotorCanId = 10;
+    public static final boolean backIntakeMotorInverted = true;
+
+    public static final IdleMode intakeMotorIdleMode = IdleMode.kBrake;
+    public static final int intakeMotorCurrentLimit = 45;
+
+    public static final int distanceSensorDeviceNumber = 31;
+    public static final double distanceSensorCoralThreshold = 400;
   }
 
   public static class LEDs {
