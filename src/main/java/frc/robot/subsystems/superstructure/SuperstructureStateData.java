@@ -14,4 +14,6 @@ public class SuperstructureStateData {
   public final double groundIntakeAngle;
   @Builder.Default public final double groundIntakeFrontSpeed = 0.0;
   @Builder.Default public final double groundIntakeBackSpeed = 0.0;
+
+  public final double climberAngle;
 }
