@@ -174,6 +174,13 @@ public final class Constants {
     public static final double allowedError = 0.0;
   }
 
+  public static class Intake {
+    public static final int intakeMotorCanId = 14;
+    public static final boolean intakeMotorInverted = false;
+    public static final IdleMode intakeMotorIdleMode = IdleMode.kBrake;
+    public static final int intakeMotorCurrentLimit = 30;
+  }
+
   public static class LEDs {
     public static int ledPwmId = 0;
 
