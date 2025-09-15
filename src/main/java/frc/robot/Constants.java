@@ -9,6 +9,7 @@ package frc.robot;
 
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.RobotConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -129,5 +130,26 @@ public final class Constants {
                 driveMotorCurrentLimit,
                 1),
             moduleTranslations);
+  }
+
+  public static class Elevator {
+    public static final int bottomMagSensorDIOChannel = 9;
+
+    public static final int leaderMotorCanId = 12;
+    public static final boolean leaderMotorInverted = true;
+    public static final int followerMotorCanId = 13;
+    public static final boolean followerMotorInverted = false;
+
+    // TODO: tune
+    public static final int motorCurrentLimit = 80;
+    public static final IdleMode motorIdleMode = IdleMode.kBrake;
+
+    public static final double kP = 0.0;
+    public static final double kI = 0.0;
+    public static final double kD = 0.0;
+    public static final double outputRange = 1.0;
+    public static final double maxVelocity = 0.0;
+    public static final double maxAcceleration = 0.0;
+    public static final double allowedError = 0.0;
   }
 }
