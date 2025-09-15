@@ -1,14 +1,17 @@
 package frc.robot.subsystems.superstructure.elevator;
 
+import org.littletonrobotics.junction.Logger;
+
+import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
+
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import org.littletonrobotics.junction.Logger;
 
 public class Elevator extends SubsystemBase {
   private SparkMax leaderMotor;
@@ -58,20 +61,31 @@ public class Elevator extends SubsystemBase {
   @Override
   public void periodic() {
     if (bottomSensorTripped()) {
-      leaderMotor.getEncoder().setPosition(0.0);
-      followerMotor.getEncoder().setPosition(0.0);
+      rezeroPosition();
     }
 
     Logger.recordOutput("Elevator/TargetPosition", targetPosition);
 
     Logger.recordOutput("Elevator/LeaderPosition", leaderMotor.getEncoder().getPosition());
     Logger.recordOutput("Elevator/FollowerPosition", followerMotor.getEncoder().getPosition());
-    Logger.recordOutput("Elevator/LeaderPower", leaderMotor.getAppliedOutput());
-    Logger.recordOutput("Elevator/FollowerPower", followerMotor.getAppliedOutput());
+    Logger.recordOutput("Elevator/LeaderOutput", leaderMotor.getAppliedOutput());
+    Logger.recordOutput("Elevator/FollowerOutput", followerMotor.getAppliedOutput());
     Logger.recordOutput("Elevator/LeaderCurrent", leaderMotor.getOutputCurrent());
     Logger.recordOutput("Elevator/FollowerCurrent", followerMotor.getOutputCurrent());
 
     Logger.recordOutput("Elevator/BottomSensorTripped", bottomSensorTripped());
+  }
+
+  public void setTargetPosition(double position) {
+    targetPosition = position;
+    leaderMotor
+        .getClosedLoopController()
+        .setReference(position, ControlType.kMAXMotionPositionControl);
+  }
+
+  public void rezeroPosition() {
+    leaderMotor.getEncoder().setPosition(0.0);
+    followerMotor.getEncoder().setPosition(0.0);
   }
 
   public boolean bottomSensorTripped() {

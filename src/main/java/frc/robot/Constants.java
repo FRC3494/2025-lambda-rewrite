@@ -10,6 +10,7 @@ package frc.robot;
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.RobotConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -140,11 +141,31 @@ public final class Constants {
     public static final int followerMotorCanId = 13;
     public static final boolean followerMotorInverted = false;
 
+    public static final double bottomHeight = Units.inchesToMeters(0.0); // TODO: get info
+    public static final double drumRadius = Units.inchesToMeters(0.0);
+
     // TODO: tune
     public static final int motorCurrentLimit = 80;
     public static final IdleMode motorIdleMode = IdleMode.kBrake;
 
-    public static final double kP = 0.0;
+    // TODO: tune
+    public static final double kP = 0.8;
+    public static final double kI = 0.0;
+    public static final double kD = 0.0;
+    public static final double outputRange = 1.0;
+    public static final double maxVelocity = 0.0;
+    public static final double maxAcceleration = 0.0;
+    public static final double allowedError = 0.0;
+  }
+
+  public static class Arm {
+    public static final int armMotorCanId = 15;
+    public static final boolean armMotorInverted = false;
+    public static final IdleMode armMotorIdleMode = IdleMode.kBrake;
+    public static final int armMotorCurrentLimit = 75;
+
+    // TODO: tune
+    public static final double kP = 9.0;
     public static final double kI = 0.0;
     public static final double kD = 0.0;
     public static final double outputRange = 1.0;
