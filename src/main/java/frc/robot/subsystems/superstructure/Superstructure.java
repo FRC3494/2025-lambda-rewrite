@@ -1,23 +1,26 @@
 package frc.robot.subsystems.superstructure;
 
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 import org.jgrapht.Graph;
 import org.jgrapht.alg.shortestpath.BFSShortestPath;
 import org.jgrapht.graph.AsSubgraph;
 import org.jgrapht.graph.DefaultDirectedGraph;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.superstructure.SuperstructureStateEdges.SuperStructureStateEdge;
+
 public class Superstructure extends SubsystemBase {
 
-  private final Graph<SuperstructureState, EdgeCommand> graph =
-      new DefaultDirectedGraph<>(EdgeCommand.class);
+  private final Graph<SuperstructureState, SuperStructureStateEdge> graph =
+      new DefaultDirectedGraph<>(SuperStructureStateEdge.class);
 
   private SuperstructureState currentState = SuperstructureState.IDLE;
   private SuperstructureState nextState;
   private SuperstructureState targetState = SuperstructureState.IDLE;
-  private EdgeCommand currentEdge;
+  private SuperStructureStateEdge currentEdge;
 
   public void SuperStructure() {
     for (var state : SuperstructureState.values()) {
@@ -52,7 +55,7 @@ public class Superstructure extends SubsystemBase {
 
   private Optional<SuperstructureState> getNextState(
       SuperstructureState start, SuperstructureState goal) {
-    Graph<SuperstructureState, EdgeCommand> graphWithoutRestrictedEdges =
+    Graph<SuperstructureState, SuperStructureStateEdge> graphWithoutRestrictedEdges =
         new AsSubgraph<>(
             graph,
             null,
@@ -64,7 +67,7 @@ public class Superstructure extends SubsystemBase {
                     })
                 .collect(Collectors.toSet()));
 
-    BFSShortestPath<SuperstructureState, EdgeCommand> bfs =
+    BFSShortestPath<SuperstructureState, SuperStructureStateEdge> bfs =
         new BFSShortestPath<>(graphWithoutRestrictedEdges);
 
     SuperstructureState next = bfs.getPath(start, goal).getVertexList().get(1);
