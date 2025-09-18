@@ -75,11 +75,13 @@ public class Elevator extends SubsystemBase {
     Logger.recordOutput("Elevator/BottomSensorTripped", bottomSensorTripped());
   }
 
-  public void setTargetPosition(double position) {
-    targetPosition = position;
-    leaderMotor
-        .getClosedLoopController()
-        .setReference(position, ControlType.kMAXMotionPositionControl);
+  public void setTargetPosition(Double position) {
+    if (position != null) {
+      targetPosition = position;
+      leaderMotor
+          .getClosedLoopController()
+          .setReference(position, ControlType.kMAXMotionPositionControl);
+    }
   }
 
   public void rezeroPosition() {

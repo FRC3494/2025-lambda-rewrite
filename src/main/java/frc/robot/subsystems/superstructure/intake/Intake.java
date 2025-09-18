@@ -35,8 +35,10 @@ public class Intake extends SubsystemBase {
     Logger.recordOutput("Intake/Current", intakeMotor.getOutputCurrent());
   }
 
-  public void setSpeed(double speed) {
-    targetSpeed = speed;
-    intakeMotor.set(speed);
+  public void setSpeed(Double speed) {
+    if (speed != null) {
+      targetSpeed = speed;
+      intakeMotor.set(speed);
+    }
   }
 }

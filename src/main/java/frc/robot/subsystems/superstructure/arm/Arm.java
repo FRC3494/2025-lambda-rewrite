@@ -49,11 +49,13 @@ public class Arm extends SubsystemBase {
     Logger.recordOutput("Arm/Current", armMotor.getOutputCurrent());
   }
 
-  public void setTargetPosition(double position) {
-    targetPosition = position;
-    armMotor
-        .getClosedLoopController()
-        .setReference(position, ControlType.kMAXMotionPositionControl);
+  public void setTargetPosition(Double position) {
+    if (position != null) {
+      targetPosition = position;
+      armMotor
+          .getClosedLoopController()
+          .setReference(position, ControlType.kMAXMotionPositionControl);
+    }
   }
 
   public double getPosition() {

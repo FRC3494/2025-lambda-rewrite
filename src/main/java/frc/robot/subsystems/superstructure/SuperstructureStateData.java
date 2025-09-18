@@ -6,14 +6,12 @@ import lombok.Getter;
 @Builder(toBuilder = true)
 @Getter
 public class SuperstructureStateData {
-  @Builder.Default public final double elevatorHeight = 0.0;
+  @Builder.Default public final Double elevatorHeight = null;
 
-  public final double armAngle;
-  @Builder.Default public final double intakeSpeed = 0.0;
+  @Builder.Default public final Double armAngle = null;
+  @Builder.Default public final Double intakeSpeed = null;
 
-  public final double groundIntakeAngle;
-  @Builder.Default public final double groundIntakeFrontSpeed = 0.0;
-  @Builder.Default public final double groundIntakeBackSpeed = 0.0;
-
-  public final double climberAngle;
+  @Builder.Default public final Double groundIntakeAngle = null;
+  @Builder.Default public final Double groundIntakeFrontSpeed = null;
+  @Builder.Default public final Double groundIntakeBackSpeed = null;
 }

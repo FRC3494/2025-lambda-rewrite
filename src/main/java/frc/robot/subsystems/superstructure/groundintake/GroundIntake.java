@@ -96,19 +96,25 @@ public class GroundIntake extends SubsystemBase {
     Logger.recordOutput("GroundIntake/DistanceSensorTripped", distanceSensorTripped());
   }
 
-  public void setTargetPivotPosition(double position) {
-    targetPivotPosition = position;
-    pivotMotor
-        .getClosedLoopController()
-        .setReference(
-            position, com.revrobotics.spark.SparkBase.ControlType.kMAXMotionPositionControl);
+  public void setTargetPivotPosition(Double position) {
+    if (position != null) {
+      targetPivotPosition = position;
+      pivotMotor
+          .getClosedLoopController()
+          .setReference(
+              position, com.revrobotics.spark.SparkBase.ControlType.kMAXMotionPositionControl);
+    }
   }
 
-  public void setIntakeSpeeds(double frontSpeed, double backSpeed) {
-    targetFrontIntakeSpeed = frontSpeed;
-    targetBackIntakeSpeed = backSpeed;
-    frontIntakeMotor.set(frontSpeed);
-    backIntakeMotor.set(backSpeed);
+  public void setIntakeSpeeds(Double frontSpeed, Double backSpeed) {
+    if (frontSpeed != null) {
+      targetFrontIntakeSpeed = frontSpeed;
+      frontIntakeMotor.set(frontSpeed);
+    }
+    if (backSpeed != null) {
+      targetBackIntakeSpeed = backSpeed;
+      backIntakeMotor.set(backSpeed);
+    }
   }
 
   public boolean distanceSensorTripped() {
