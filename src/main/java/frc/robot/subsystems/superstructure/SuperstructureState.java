@@ -8,36 +8,136 @@ public enum SuperstructureState {
 
   STOW(
       SuperstructureStateData.builder()
-          .armAngle(Presets.Stow.armAngle)
           .elevatorHeight(Presets.Stow.elevatorHeight)
+          .armAngle(Presets.Stow.armAngle)
+          .intakeSpeed(Presets.Stow.intakeSpeed)
+          .groundIntakeAngle(Presets.Stow.groundIntakeAngle)
+          .groundIntakeFrontSpeed(Presets.Stow.groundIntakeFrontSpeed)
+          .groundIntakeBackSpeed(Presets.Stow.groundIntakeBackSpeed)
           .build()),
 
-  GROUND_INTAKE_FOR_TRANSFER(SuperstructureStateData.builder().armAngle(0.959).build()),
-  GROUND_INTAKE_FOR_L1(SuperstructureStateData.builder().armAngle(0.75).build()),
+  GROUND_INTAKE_FOR_TRANSFER(
+      SuperstructureStateData.builder()
+          .elevatorHeight(Presets.GroundIntakeForTransfer.elevatorHeight)
+          .armAngle(Presets.GroundIntakeForTransfer.armAngle)
+          .groundIntakeAngle(Presets.GroundIntakeForTransfer.groundIntakeAngle)
+          .groundIntakeFrontSpeed(Presets.GroundIntakeForTransfer.groundIntakeFrontSpeed)
+          .groundIntakeBackSpeed(Presets.GroundIntakeForTransfer.groundIntakeBackSpeed)
+          .build()),
+  DONE_WITH_GROUND_INTAKE_FOR_TRANSFER(
+      SuperstructureStateData.builder()
+          .elevatorHeight(Presets.DoneWithGroundIntakeForTransfer.elevatorHeight)
+          .armAngle(Presets.DoneWithGroundIntakeForTransfer.armAngle)
+          .groundIntakeAngle(Presets.DoneWithGroundIntakeForTransfer.groundIntakeAngle)
+          .groundIntakeFrontSpeed(Presets.DoneWithGroundIntakeForTransfer.groundIntakeFrontSpeed)
+          .groundIntakeBackSpeed(Presets.DoneWithGroundIntakeForTransfer.groundIntakeBackSpeed)
+          .build()),
+  GROUND_INTAKE_FOR_L1(
+      SuperstructureStateData.builder()
+          .elevatorHeight(Presets.GroundIntakeForL1.elevatorHeight)
+          .armAngle(Presets.GroundIntakeForL1.armAngle)
+          .groundIntakeAngle(Presets.GroundIntakeForL1.groundIntakeAngle)
+          .groundIntakeFrontSpeed(Presets.GroundIntakeForL1.groundIntakeFrontSpeed)
+          .groundIntakeBackSpeed(Presets.GroundIntakeForL1.groundIntakeBackSpeed)
+          .build()),
+  GROUND_INTAKE_L1(
+      SuperstructureStateData.builder()
+          .elevatorHeight(Presets.GroundIntakeL1.elevatorHeight)
+          .armAngle(Presets.GroundIntakeL1.armAngle)
+          .groundIntakeAngle(Presets.GroundIntakeL1.groundIntakeAngle)
+          .groundIntakeFrontSpeed(Presets.GroundIntakeL1.groundIntakeFrontSpeed)
+          .groundIntakeBackSpeed(Presets.GroundIntakeL1.groundIntakeBackSpeed)
+          .build()),
+  GROUND_INTAKE_L1_PRE_JERK(
+      SuperstructureStateData.builder()
+          .elevatorHeight(Presets.GroundIntakeL1PreJerk.elevatorHeight)
+          .armAngle(Presets.GroundIntakeL1PreJerk.armAngle)
+          .groundIntakeAngle(Presets.GroundIntakeL1PreJerk.groundIntakeAngle)
+          .groundIntakeFrontSpeed(Presets.GroundIntakeL1PreJerk.groundIntakeFrontSpeed)
+          .groundIntakeBackSpeed(Presets.GroundIntakeL1PreJerk.groundIntakeBackSpeed)
+          .build()),
+  GROUND_INTAKE_L1_JERK(
+      SuperstructureStateData.builder()
+          .elevatorHeight(Presets.GroundIntakeL1Jerk.elevatorHeight)
+          .armAngle(Presets.GroundIntakeL1Jerk.armAngle)
+          .groundIntakeAngle(Presets.GroundIntakeL1Jerk.groundIntakeAngle)
+          .build()),
 
-  GROUND_INTAKE_L1(SuperstructureStateData.builder().armAngle(0.75).build()),
-  GROUND_INTAKE_L1_JERK(SuperstructureStateData.builder().armAngle(0.75).build()),
+  FEEDER(
+      SuperstructureStateData.builder()
+          .elevatorHeight(Presets.Feeder.elevatorHeight)
+          .armAngle(Presets.Feeder.armAngle)
+          .intakeSpeed(Presets.Feeder.intakeSpeed)
+          .groundIntakeAngle(Presets.Feeder.groundIntakeAngle)
+          .groundIntakeFrontSpeed(Presets.Feeder.groundIntakeFrontSpeed)
+          .groundIntakeBackSpeed(Presets.Feeder.groundIntakeBackSpeed)
+          .build()),
 
-  L2_CORAL(SuperstructureStateData.builder().armAngle(0.610).build()),
-  L2_CORAL_OUTTAKE(SuperstructureStateData.builder().build()),
+  ARM_L1_CORAL(
+      SuperstructureStateData.builder()
+          .elevatorHeight(Presets.ArmL1Coral.elevatorHeight)
+          .armAngle(Presets.ArmL1Coral.armAngle)
+          .groundIntakeAngle(Presets.ArmL1Coral.groundIntakeAngle)
+          .build()),
+  ARM_L1_CORAL_OUTTAKE(
+      ARM_L1_CORAL.getValue().toBuilder().intakeSpeed(Presets.CoralOuttake.intakeSpeed).build()),
+  L2_CORAL(
+      SuperstructureStateData.builder()
+          .elevatorHeight(Presets.L2Coral.elevatorHeight)
+          .armAngle(Presets.L2Coral.armAngle)
+          .groundIntakeAngle(Presets.L2Coral.groundIntakeAngle)
+          .build()),
+  L2_CORAL_OUTTAKE(
+      L2_CORAL.getValue().toBuilder().intakeSpeed(Presets.CoralOuttake.intakeSpeed).build()),
   L3_CORAL(
       SuperstructureStateData.builder()
-          .armAngle(0.63)
-          .elevatorHeight(44.5)
-          .groundIntakeAngle(0.31)
+          .elevatorHeight(Presets.L3Coral.elevatorHeight)
+          .armAngle(Presets.L3Coral.armAngle)
+          .groundIntakeAngle(Presets.L3Coral.groundIntakeAngle)
           .build()),
-  L3_CORAL_OUTTAKE(L3_CORAL.getValue().toBuilder().intakeSpeed(0.0).build()),
+  L3_CORAL_OUTTAKE(
+      L3_CORAL.getValue().toBuilder().intakeSpeed(Presets.CoralOuttake.intakeSpeed).build()),
 
-  L2_ALGAE(SuperstructureStateData.builder().armAngle(0.62).build()),
+  L2_ALGAE(
+      SuperstructureStateData.builder()
+          .elevatorHeight(Presets.L2Algae.elevatorHeight)
+          .armAngle(Presets.L2Algae.armAngle)
+          .groundIntakeAngle(Presets.L2Algae.groundIntakeAngle)
+          .build()),
   L3_ALGAE(
       SuperstructureStateData.builder()
-          .armAngle(0.632)
-          .elevatorHeight(28.75)
-          .groundIntakeAngle(0.31)
-          .groundIntakeFrontSpeed(0.0)
-          .groundIntakeBackSpeed(0.0)
+          .elevatorHeight(Presets.L3Algae.elevatorHeight)
+          .armAngle(Presets.L3Algae.armAngle)
+          .groundIntakeAngle(Presets.L3Algae.groundIntakeAngle)
           .build()),
-  ;
+
+  PROCESSOR(
+      SuperstructureStateData.builder()
+          .elevatorHeight(Presets.Processor.elevatorHeight)
+          .armAngle(Presets.Processor.armAngle)
+          .groundIntakeAngle(Presets.Processor.groundIntakeAngle)
+          .build()),
+  PROCESSOR_OUTTAKE(
+      PROCESSOR.getValue().toBuilder().intakeSpeed(Presets.ProcessorOuttake.intakeSpeed).build()),
+  PRE_BARGE(
+      SuperstructureStateData.builder()
+          .elevatorHeight(Presets.PreBarge.elevatorHeight)
+          .armAngle(Presets.PreBarge.armAngle)
+          .groundIntakeAngle(Presets.PreBarge.groundIntakeAngle)
+          .build()),
+  BARGE(
+      SuperstructureStateData.builder()
+          .elevatorHeight(Presets.Barge.elevatorHeight)
+          .armAngle(Presets.Barge.armAngle)
+          .groundIntakeAngle(Presets.Barge.groundIntakeAngle)
+          .build()),
+
+  PRE_CLIMB(
+      SuperstructureStateData.builder()
+          .elevatorHeight(Presets.PreClimb.elevatorHeight)
+          .armAngle(Presets.PreClimb.armAngle)
+          .groundIntakeAngle(Presets.PreClimb.groundIntakeAngle)
+          .build());
 
   private final SuperstructureStateData value;
 

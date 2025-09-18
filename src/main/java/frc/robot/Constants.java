@@ -172,6 +172,9 @@ public final class Constants {
     public static final double maxVelocity = 0.0;
     public static final double maxAcceleration = 0.0;
     public static final double allowedError = 0.0;
+
+    // TODO: find a better place to put this
+    public static final double bargeYeetReleaseAngle = 0.805;
   }
 
   public static class Intake {
@@ -206,6 +209,13 @@ public final class Constants {
 
     public static final int distanceSensorDeviceNumber = 31;
     public static final double distanceSensorCoralThreshold = 400;
+  }
+
+  public static class Climber {
+    // TODO: find a better place to put these presets
+    public static final double stage0Angle = 0.0;
+    public static final double stage1Angle = -28.0;
+    public static final double stage2Angle = -53.4;
   }
 
   public static class LEDs {
