@@ -1,5 +1,12 @@
 package frc.robot.subsystems.superstructure;
 
+import java.util.Optional;
+
+import org.jgrapht.Graph;
+import org.jgrapht.alg.shortestpath.BFSShortestPath;
+import org.jgrapht.graph.DefaultDirectedGraph;
+import org.jgrapht.graph.MaskSubgraph;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -10,11 +17,6 @@ import frc.robot.subsystems.superstructure.arm.Arm;
 import frc.robot.subsystems.superstructure.elevator.Elevator;
 import frc.robot.subsystems.superstructure.groundintake.GroundIntake;
 import frc.robot.subsystems.superstructure.intake.Intake;
-import java.util.Optional;
-import org.jgrapht.Graph;
-import org.jgrapht.alg.shortestpath.BFSShortestPath;
-import org.jgrapht.graph.DefaultDirectedGraph;
-import org.jgrapht.graph.MaskSubgraph;
 
 public class Superstructure extends SubsystemBase {
   private final Graph<SuperstructureState, SuperstructureStateEdge> graph =
@@ -59,6 +61,7 @@ public class Superstructure extends SubsystemBase {
   }
 
   @Override
+  // @CodeScene(disable: "Bumpy Road Ahead")
   public void periodic() {
     if (DriverStation.isDisabled()) {
       targetState = currentState;
