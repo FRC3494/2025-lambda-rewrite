@@ -1,5 +1,7 @@
 package frc.robot.subsystems.superstructure.groundintake;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.playingwithfusion.TimeOfFlight;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
@@ -9,12 +11,17 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkMaxConfig;
+
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants;
-import org.littletonrobotics.junction.Logger;
+import frc.robot.subsystems.superstructure.arm.Arm;
 
 public class GroundIntake extends SubsystemBase {
+  private static GroundIntake instance = null;
+
   private SparkFlex pivotMotor;
   private SparkMaxConfig pivotMotorConfig;
   private double targetPivotPosition = 0.0;
@@ -29,7 +36,7 @@ public class GroundIntake extends SubsystemBase {
 
   private TimeOfFlight distanceSensor;
 
-  public GroundIntake() {
+  private GroundIntake() {
     pivotMotor = new SparkFlex(Constants.GroundIntake.pivotMotorCanId, MotorType.kBrushless);
     pivotMotorConfig = new SparkMaxConfig();
     pivotMotorConfig
@@ -77,6 +84,13 @@ public class GroundIntake extends SubsystemBase {
     distanceSensor = new TimeOfFlight(Constants.GroundIntake.distanceSensorDeviceNumber);
   }
 
+  public static GroundIntake getInstance() {
+    if (instance == null) {
+      instance = new GroundIntake();
+    }
+    return instance;
+  }
+
   @Override
   public void periodic() {
     Logger.recordOutput("GroundIntake/TargetPivotPosition", targetPivotPosition);
@@ -97,15 +111,17 @@ public class GroundIntake extends SubsystemBase {
   }
 
   public Command setTargetPivotPosition(Double position) {
-    return this.runOnce(
-        () -> {
-          if (position != null) {
-            targetPivotPosition = position;
-            pivotMotor
-                .getClosedLoopController()
-                .setReference(position, ControlType.kMAXMotionPositionControl);
-          }
-        });
+    return Commands.sequence(
+        new WaitUntilCommand(Arm.getInstance()::pastSafePosition),
+        this.runOnce(
+            () -> {
+              if (position != null) {
+                targetPivotPosition = position;
+                pivotMotor
+                    .getClosedLoopController()
+                    .setReference(position, ControlType.kMAXMotionPositionControl);
+              }
+            }));
   }
 
   public Command setIntakeSpeeds(Double frontSpeed, Double backSpeed) {

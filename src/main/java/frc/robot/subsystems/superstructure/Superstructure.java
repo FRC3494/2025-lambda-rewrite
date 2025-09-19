@@ -1,6 +1,7 @@
 package frc.robot.subsystems.superstructure;
 
 import java.util.Optional;
+import java.util.function.BooleanSupplier;
 
 import org.jgrapht.Graph;
 import org.jgrapht.alg.shortestpath.BFSShortestPath;
@@ -120,34 +121,333 @@ public class Superstructure extends SubsystemBase {
     switch (to) {
       case STOW:
         {
-          return Commands.sequence(
-              intake.setSpeed(toData.getIntakeSpeed()),
-              groundIntake.setIntakeSpeeds(
-                  toData.getGroundIntakeFrontSpeed(), toData.getGroundIntakeBackSpeed()),
-              elevator.setTargetPosition(toData.getElevatorHeight()),
-              arm.setTargetPosition(toData.getArmAngle()),
-              new WaitUntilCommand(arm::pastSafePosition),
-              groundIntake.setTargetPivotPosition(toData.getGroundIntakeAngle()));
+          if (SuperstructureStateEdges.safeNoAlgaeFromStates.contains(from)) {
+            return Commands.sequence(
+                intake.setSpeed(toData.getIntakeSpeed()),
+                groundIntake.setIntakeSpeeds(
+                    toData.getGroundIntakeFrontSpeed(), toData.getGroundIntakeBackSpeed()),
+                elevator.setTargetPosition(toData.getElevatorHeight()),
+                arm.setTargetPosition(toData.getArmAngle()),
+                new WaitUntilCommand((BooleanSupplier) arm::pastSafePosition),
+                groundIntake.setTargetPivotPosition(toData.getGroundIntakeAngle()));
+          } else if (from == SuperstructureState.FEEDER) {
+            return Commands.sequence(
+                intake.setSpeed(toData.getIntakeSpeed()),
+                groundIntake.setIntakeSpeeds(
+                    toData.getGroundIntakeFrontSpeed(), toData.getGroundIntakeBackSpeed()),
+                // TODO: do smth else with where this constant comes from?
+                arm.setTargetPosition(Presets.Feeder.armSafeAngle),
+                elevator.setTargetPosition(toData.getElevatorHeight()),
+                new WaitUntilCommand((BooleanSupplier) arm::pastSafePosition),
+                arm.setTargetPosition(toData.getArmAngle()),
+                groundIntake.setTargetPivotPosition(toData.getGroundIntakeAngle()));
+          } else {
+            printNoEdgeMessage(from, to);
+            return Commands.none();
+          }
         }
 
+      // ==================== Ground Intake ====================
       case GROUND_INTAKE_FOR_TRANSFER:
         {
-          return Commands.sequence(
-              groundIntake.setTargetPivotPosition(toData.getGroundIntakeAngle()),
-              intake.setSpeed(toData.getIntakeSpeed()),
-              new WaitUntilCommand(groundIntake::pastSafePosition),
-              arm.setTargetPosition(toData.getArmAngle()),
-              elevator.setTargetPosition(toData.getElevatorHeight()),
-              new WaitUntilCommand(arm::atTargetPosition),
-              groundIntake.setIntakeSpeeds(
-                  toData.getGroundIntakeFrontSpeed(), toData.getGroundIntakeBackSpeed()));
+          if (SuperstructureStateEdges.safeNoAlgaeFromStates.contains(from)) {
+            return Commands.sequence(
+                groundIntake.setTargetPivotPosition(toData.getGroundIntakeAngle()),
+                intake.setSpeed(toData.getIntakeSpeed()),
+                // TODO: test without this line
+                new WaitUntilCommand((BooleanSupplier) groundIntake::pastSafePosition),
+                arm.setTargetPosition(toData.getArmAngle()),
+                elevator.setTargetPosition(toData.getElevatorHeight()),
+                new WaitUntilCommand((BooleanSupplier) arm::atTargetPosition),
+                groundIntake.setIntakeSpeeds(
+                    toData.getGroundIntakeFrontSpeed(), toData.getGroundIntakeBackSpeed()));
+          } else {
+            printNoEdgeMessage(from, to);
+            return Commands.none();
+          }
+        }
+      case DONE_WITH_GROUND_INTAKE_FOR_TRANSFER:
+        {
+          if (from == SuperstructureState.GROUND_INTAKE_FOR_TRANSFER) {
+            return Commands.sequence(
+                elevator.setTargetPosition(toData.getElevatorHeight()),
+                arm.setTargetPosition(toData.getArmAngle()),
+                groundIntake.setTargetPivotPosition(toData.getGroundIntakeAngle()),
+                groundIntake.setIntakeSpeeds(
+                    toData.getGroundIntakeFrontSpeed(), toData.getGroundIntakeBackSpeed()),
+                intake.setSpeed(toData.getIntakeSpeed()));
+          } else {
+            printNoEdgeMessage(from, to);
+            return Commands.none();
+          }
+        }
+
+      case GROUND_INTAKE_FOR_L1:
+        {
+          if (SuperstructureStateEdges.safeNoAlgaeFromStates.contains(from)) {
+            return Commands.sequence(
+                groundIntake.setTargetPivotPosition(toData.getGroundIntakeAngle()),
+                arm.setTargetPosition(toData.getArmAngle()),
+                elevator.setTargetPosition(toData.getElevatorHeight()),
+                intake.setSpeed(toData.getIntakeSpeed()),
+                groundIntake.setIntakeSpeeds(
+                    toData.getGroundIntakeFrontSpeed(), toData.getGroundIntakeBackSpeed()));
+          } else {
+            printNoEdgeMessage(from, to);
+            return Commands.none();
+          }
+        }
+      case GROUND_INTAKE_L1:
+        {
+          if (from == SuperstructureState.GROUND_INTAKE_FOR_L1) {
+            return Commands.sequence(
+                elevator.setTargetPosition(toData.getElevatorHeight()),
+                arm.setTargetPosition(toData.getArmAngle()),
+                groundIntake.setTargetPivotPosition(toData.getGroundIntakeAngle()),
+                groundIntake.setIntakeSpeeds(
+                    toData.getGroundIntakeFrontSpeed(), toData.getGroundIntakeBackSpeed()));
+          } else {
+            printNoEdgeMessage(from, to);
+            return Commands.none();
+          }
+        }
+      case GROUND_INTAKE_L1_PRE_JERK:
+        {
+          if (from == SuperstructureState.GROUND_INTAKE_L1) {
+            return Commands.sequence(
+                elevator.setTargetPosition(toData.getElevatorHeight()),
+                arm.setTargetPosition(toData.getArmAngle()),
+                groundIntake.setTargetPivotPosition(toData.getGroundIntakeAngle()),
+                groundIntake.setIntakeSpeeds(
+                    toData.getGroundIntakeFrontSpeed(), toData.getGroundIntakeBackSpeed()));
+          } else {
+            printNoEdgeMessage(from, to);
+            return Commands.none();
+          }
+        }
+      case GROUND_INTAKE_L1_JERK:
+        {
+          if (from == SuperstructureState.GROUND_INTAKE_L1_PRE_JERK) {
+            return Commands.sequence(
+                // TODO: make speed faster? idk
+                elevator.setTargetPosition(toData.getElevatorHeight()),
+                arm.setTargetPosition(toData.getArmAngle()),
+                groundIntake.setTargetPivotPosition(toData.getGroundIntakeAngle())
+                // TODO: set intake speeds? idk if we need it
+                );
+          } else {
+            printNoEdgeMessage(from, to);
+            return Commands.none();
+          }
+        }
+
+      // ==================== Coral Intake w/ Arm ====================
+      case FEEDER:
+        {
+          if (SuperstructureStateEdges.safeNoAlgaeFromStates.contains(from)) {
+            return Commands.sequence(
+                groundIntake.setIntakeSpeeds(
+                    toData.getGroundIntakeFrontSpeed(), toData.getGroundIntakeBackSpeed()),
+                // TODO: do smth else with where this constant comes from?
+                arm.setTargetPosition(Presets.Feeder.armSafeAngle),
+                elevator.setTargetPosition(toData.getElevatorHeight()),
+                new WaitUntilCommand((BooleanSupplier) arm::pastSafePosition),
+                groundIntake.setTargetPivotPosition(toData.getGroundIntakeAngle()),
+                arm.setTargetPosition(toData.getArmAngle()),
+                intake.setSpeed(toData.getIntakeSpeed()));
+          } else {
+            printNoEdgeMessage(from, to);
+            return Commands.none();
+          }
+        }
+
+      // ==================== Coral Outtake w/ Arm ====================
+      case ARM_L1_CORAL:
+        {
+          if (SuperstructureStateEdges.safeNoAlgaeFromStates.contains(from)) {
+            return Commands.sequence(
+                elevator.setTargetPosition(toData.getElevatorHeight()),
+                arm.setTargetPosition(toData.getArmAngle()),
+                new WaitUntilCommand((BooleanSupplier) arm::pastSafePosition),
+                groundIntake.setTargetPivotPosition(toData.getGroundIntakeAngle()));
+          } else {
+            printNoEdgeMessage(from, to);
+            return Commands.none();
+          }
+        }
+      case ARM_L1_CORAL_OUTTAKE:
+        {
+          if (from == SuperstructureState.ARM_L1_CORAL) {
+            return intake.setSpeed(toData.getIntakeSpeed());
+          } else {
+            printNoEdgeMessage(from, to);
+            return Commands.none();
+          }
+        }
+
+      case L2_CORAL:
+        {
+          if (SuperstructureStateEdges.safeNoAlgaeFromStates.contains(from)) {
+            return Commands.sequence(
+                elevator.setTargetPosition(toData.getElevatorHeight()),
+                arm.setTargetPosition(toData.getArmAngle()),
+                new WaitUntilCommand((BooleanSupplier) arm::pastSafePosition),
+                groundIntake.setTargetPivotPosition(toData.getGroundIntakeAngle()));
+          } else {
+            printNoEdgeMessage(from, to);
+            return Commands.none();
+          }
+        }
+      case L2_CORAL_OUTTAKE:
+        {
+          if (from == SuperstructureState.L2_CORAL) {
+            return intake.setSpeed(toData.getIntakeSpeed());
+          } else {
+            printNoEdgeMessage(from, to);
+            return Commands.none();
+          }
+        }
+
+      case L3_CORAL:
+        {
+          if (SuperstructureStateEdges.safeNoAlgaeFromStates.contains(from)) {
+            return Commands.sequence(
+                elevator.setTargetPosition(toData.getElevatorHeight()),
+                arm.setTargetPosition(toData.getArmAngle()),
+                new WaitUntilCommand((BooleanSupplier) arm::pastSafePosition),
+                groundIntake.setTargetPivotPosition(toData.getGroundIntakeAngle()));
+          } else {
+            printNoEdgeMessage(from, to);
+            return Commands.none();
+          }
+        }
+      case L3_CORAL_OUTTAKE:
+        {
+          if (from == SuperstructureState.L3_CORAL) {
+            return intake.setSpeed(toData.getIntakeSpeed());
+          } else {
+            printNoEdgeMessage(from, to);
+            return Commands.none();
+          }
+        }
+
+      // ==================== Algae Intake ====================
+      case L2_ALGAE:
+        {
+          if (SuperstructureStateEdges.safeNoAlgaeFromStates.contains(from)) {
+            return Commands.sequence(
+                intake.setSpeed(toData.getIntakeSpeed()),
+                elevator.setTargetPosition(toData.getElevatorHeight()),
+                arm.setTargetPosition(toData.getArmAngle()),
+                new WaitUntilCommand((BooleanSupplier) arm::pastSafePosition),
+                groundIntake.setTargetPivotPosition(toData.getGroundIntakeAngle()));
+          } else {
+            printNoEdgeMessage(from, to);
+            return Commands.none();
+          }
+        }
+
+      case L3_ALGAE:
+        {
+          if (SuperstructureStateEdges.safeNoAlgaeFromStates.contains(from)) {
+            return Commands.sequence(
+                intake.setSpeed(toData.getIntakeSpeed()),
+                elevator.setTargetPosition(toData.getElevatorHeight()),
+                arm.setTargetPosition(toData.getArmAngle()),
+                new WaitUntilCommand((BooleanSupplier) arm::pastSafePosition),
+                groundIntake.setTargetPivotPosition(toData.getGroundIntakeAngle()));
+          } else {
+            printNoEdgeMessage(from, to);
+            return Commands.none();
+          }
+        }
+
+      // ==================== Algae Outtake ====================
+      case PROCESSOR:
+        {
+          if (from == SuperstructureState.L2_ALGAE || from == SuperstructureState.L3_ALGAE) {
+            return Commands.sequence(
+                intake.setSpeed(toData.getIntakeSpeed()),
+                elevator.setTargetPosition(toData.getElevatorHeight()),
+                arm.setTargetPosition(toData.getArmAngle()),
+                new WaitUntilCommand((BooleanSupplier) arm::pastSafePosition),
+                groundIntake.setTargetPivotPosition(toData.getGroundIntakeAngle()));
+          } else {
+            printNoEdgeMessage(from, to);
+            return Commands.none();
+          }
+        }
+      case PROCESSOR_OUTTAKE:
+        {
+          if (from == SuperstructureState.PROCESSOR) {
+            return intake.setSpeed(toData.getIntakeSpeed());
+          } else {
+            printNoEdgeMessage(from, to);
+            return Commands.none();
+          }
+        }
+
+      case PRE_BARGE:
+        {
+          if (from == SuperstructureState.L2_ALGAE || from == SuperstructureState.L3_ALGAE) {
+            return Commands.sequence(
+                intake.setSpeed(Presets.PreBarge.intakeSpeedDuring),
+                groundIntake.setTargetPivotPosition(toData.getGroundIntakeAngle()),
+                arm.setTargetPosition(toData.getArmAngle()),
+                elevator.setTargetPosition(toData.getElevatorHeight()),
+                new WaitUntilCommand(arm::atTargetPosition),
+                intake.setSpeed(toData.getIntakeSpeed()));
+          } else {
+            printNoEdgeMessage(from, to);
+            return Commands.none();
+          }
+        }
+      case BARGE:
+        {
+          if (from == SuperstructureState.PRE_BARGE) {
+            return Commands.sequence(
+                groundIntake.setTargetPivotPosition(toData.getGroundIntakeAngle()),
+                elevator.setTargetPosition(toData.getElevatorHeight()),
+                arm.setTargetPosition(toData.getArmAngle()),
+                // TODO: check if less than or greater than
+                new WaitUntilCommand(() -> arm.getPosition() < Presets.Barge.bargeYeetReleaseAngle),
+                intake.setSpeed(toData.getIntakeSpeed()));
+          } else {
+            printNoEdgeMessage(from, to);
+            return Commands.none();
+          }
+        }
+
+      // ==================== Pre-Climb ====================
+      case PRE_CLIMB:
+        {
+          if (SuperstructureStateEdges.safeNoAlgaeFromStates.contains(from)) {
+            return Commands.sequence(
+                intake.setSpeed(toData.getIntakeSpeed()),
+                groundIntake.setIntakeSpeeds(
+                    toData.getGroundIntakeFrontSpeed(), toData.getGroundIntakeBackSpeed()),
+                elevator.setTargetPosition(toData.getElevatorHeight()),
+                arm.setTargetPosition(toData.getArmAngle()),
+                new WaitUntilCommand((BooleanSupplier) arm::pastSafePosition),
+                groundIntake.setTargetPivotPosition(toData.getGroundIntakeAngle())
+                // TODO: climber
+                );
+          } else {
+            printNoEdgeMessage(from, to);
+            return Commands.none();
+          }
         }
 
       default:
         {
-          System.out.println("getEdgeCommand failed");
+          System.out.println("getEdgeCommand: No edges exist from state: " + from.toString());
           return Commands.none();
         }
     }
+  }
+
+  private void printNoEdgeMessage(SuperstructureState from, SuperstructureState to) {
+    System.out.println(
+        "No edge exists from state: " + from.toString() + " to state: " + to.toString());
   }
 }

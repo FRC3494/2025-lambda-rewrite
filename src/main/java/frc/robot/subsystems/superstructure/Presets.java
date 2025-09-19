@@ -104,6 +104,7 @@ public final class Presets {
 
     public static final double armAngle = 0.845;
     public static final double intakeSpeed = IntakeSpeeds.coralActiveIntake;
+    public static final double armSafeAngle = Stow.armAngle;
 
     public static final double groundIntakeAngle = 0.31;
     public static final double groundIntakeFrontSpeed = 0.0;
@@ -177,8 +178,9 @@ public final class Presets {
 
     public static final double armAngle = 0.85;
     public static final double intakeSpeed = IntakeSpeeds.algaePassiveIntake;
+    public static final double intakeSpeedDuring = 0.8; // TODO: random number
 
-    public static final double groundIntakeAngle = Stow.groundIntakeAngle;
+    public static final double groundIntakeAngle = 0.05;
   }
 
   public static class Barge {
@@ -186,8 +188,9 @@ public final class Presets {
 
     public static final double armAngle = 0.65;
     public static final double intakeSpeed = IntakeSpeeds.algaeOuttake;
+    public static final double bargeYeetReleaseAngle = 0.805;
 
-    public static final double groundIntakeAngle = Stow.groundIntakeAngle;
+    public static final double groundIntakeAngle = 0.05;
   }
 
   // ==================== Pre-Climb ====================

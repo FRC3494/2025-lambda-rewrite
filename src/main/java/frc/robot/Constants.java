@@ -10,6 +10,7 @@ package frc.robot;
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.RobotConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -174,7 +175,6 @@ public final class Constants {
 
     public static final double positionDeadband = 0.05;
     // TODO: find a better place to put this
-    public static final double bargeYeetReleaseAngle = 0.805;
     public static final double safeAngle = 0.0; // Angle where arm will not hit the ground intake
   }
 

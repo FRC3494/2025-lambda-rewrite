@@ -16,6 +16,7 @@ public enum SuperstructureState {
           .groundIntakeBackSpeed(Presets.Stow.groundIntakeBackSpeed)
           .build()),
 
+  // ==================== Ground Intake ====================
   GROUND_INTAKE_FOR_TRANSFER(
       SuperstructureStateData.builder()
           .elevatorHeight(Presets.GroundIntakeForTransfer.elevatorHeight)
@@ -66,6 +67,7 @@ public enum SuperstructureState {
           .groundIntakeAngle(Presets.GroundIntakeL1Jerk.groundIntakeAngle)
           .build()),
 
+  // ==================== Coral Intake w/ Arm ====================
   FEEDER(
       SuperstructureStateData.builder()
           .elevatorHeight(Presets.Feeder.elevatorHeight)
@@ -76,6 +78,7 @@ public enum SuperstructureState {
           .groundIntakeBackSpeed(Presets.Feeder.groundIntakeBackSpeed)
           .build()),
 
+  // ==================== Coral Outtake w/ Arm ====================
   ARM_L1_CORAL(
       SuperstructureStateData.builder()
           .elevatorHeight(Presets.ArmL1Coral.elevatorHeight)
@@ -101,6 +104,7 @@ public enum SuperstructureState {
   L3_CORAL_OUTTAKE(
       L3_CORAL.getValue().toBuilder().intakeSpeed(Presets.IntakeSpeeds.coralOuttake).build()),
 
+  // ==================== Algae Intake ====================
   L2_ALGAE(
       SuperstructureStateData.builder()
           .elevatorHeight(Presets.L2Algae.elevatorHeight)
@@ -116,6 +120,7 @@ public enum SuperstructureState {
           .groundIntakeAngle(Presets.L3Algae.groundIntakeAngle)
           .build()),
 
+  // ==================== Algae Outtake ====================
   PROCESSOR(
       SuperstructureStateData.builder()
           .elevatorHeight(Presets.Processor.elevatorHeight)
@@ -140,6 +145,7 @@ public enum SuperstructureState {
           .groundIntakeAngle(Presets.Barge.groundIntakeAngle)
           .build()),
 
+  // ==================== Pre-Climb ====================
   PRE_CLIMB(
       SuperstructureStateData.builder()
           .elevatorHeight(Presets.PreClimb.elevatorHeight)

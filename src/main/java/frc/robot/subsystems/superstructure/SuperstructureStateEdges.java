@@ -1,10 +1,12 @@
 package frc.robot.subsystems.superstructure;
 
-import edu.wpi.first.wpilibj2.command.Command;
 import java.util.Set;
+
+import org.jgrapht.graph.DefaultEdge;
+
+import edu.wpi.first.wpilibj2.command.Command;
 import lombok.Builder;
 import lombok.Getter;
-import org.jgrapht.graph.DefaultEdge;
 
 public class SuperstructureStateEdges {
   @Builder(toBuilder = true)
@@ -22,7 +24,6 @@ public class SuperstructureStateEdges {
           SuperstructureState.DONE_WITH_GROUND_INTAKE_FOR_TRANSFER,
           SuperstructureState.GROUND_INTAKE_L1,
           SuperstructureState.GROUND_INTAKE_L1_JERK,
-          SuperstructureState.FEEDER,
           SuperstructureState.ARM_L1_CORAL,
           SuperstructureState.ARM_L1_CORAL_OUTTAKE,
           SuperstructureState.L2_CORAL,
