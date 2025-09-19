@@ -1,7 +1,5 @@
 package frc.robot.subsystems.superstructure.groundintake;
 
-import org.littletonrobotics.junction.Logger;
-
 import com.playingwithfusion.TimeOfFlight;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
@@ -11,10 +9,10 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkMaxConfig;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import org.littletonrobotics.junction.Logger;
 
 public class GroundIntake extends SubsystemBase {
   private SparkFlex pivotMotor;
@@ -138,6 +136,6 @@ public class GroundIntake extends SubsystemBase {
 
   public boolean atSetpoint() {
     return Math.abs(getPivotPosition() - targetPivotPosition)
-        < Constants.GroundIntake.pivotAllowedError;
+        < Constants.GroundIntake.positionDeadband;
   }
 }
