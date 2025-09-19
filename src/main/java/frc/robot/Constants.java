@@ -173,8 +173,10 @@ public final class Constants {
     public static final double maxAcceleration = 0.0;
     public static final double allowedError = 0.0;
 
+    public static final double positionDeadband = 0.05;
     // TODO: find a better place to put this
     public static final double bargeYeetReleaseAngle = 0.805;
+    public static final double safeAngle = 0.0; // Angle where arm will not hit the ground intake
   }
 
   public static class Intake {
@@ -209,6 +211,10 @@ public final class Constants {
 
     public static final int distanceSensorDeviceNumber = 31;
     public static final double distanceSensorCoralThreshold = 400;
+
+    public static final double positionDeadband = 0.05;
+    // TODO: find a better place to put this
+    public static final double safeAngle = 0.0; // Angle where arm will not hit the ground intake
   }
 
   public static class Climber {

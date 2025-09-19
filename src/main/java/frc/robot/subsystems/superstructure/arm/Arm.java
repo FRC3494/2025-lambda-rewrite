@@ -10,6 +10,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkFlexConfig;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -49,16 +50,28 @@ public class Arm extends SubsystemBase {
     Logger.recordOutput("Arm/Current", armMotor.getOutputCurrent());
   }
 
-  public void setTargetPosition(Double position) {
-    if (position != null) {
-      targetPosition = position;
-      armMotor
-          .getClosedLoopController()
-          .setReference(position, ControlType.kMAXMotionPositionControl);
-    }
+  public Command setTargetPosition(Double position) {
+    return this.runOnce(
+        () -> {
+          if (position != null) {
+            targetPosition = position;
+            armMotor
+                .getClosedLoopController()
+                .setReference(position, ControlType.kMAXMotionPositionControl);
+          }
+        });
   }
 
   public double getPosition() {
     return armMotor.getAbsoluteEncoder().getPosition();
+  }
+
+  public boolean pastSafePosition() {
+    // TODO: check if less than or greater than
+    return getPosition() < Constants.Arm.safeAngle;
+  }
+
+  public boolean atTargetPosition() {
+    return Math.abs(getPosition() - targetPosition) < Constants.Arm.positionDeadband;
   }
 }

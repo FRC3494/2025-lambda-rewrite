@@ -10,6 +10,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -75,13 +76,16 @@ public class Elevator extends SubsystemBase {
     Logger.recordOutput("Elevator/BottomSensorTripped", bottomSensorTripped());
   }
 
-  public void setTargetPosition(Double position) {
-    if (position != null) {
-      targetPosition = position;
-      leaderMotor
-          .getClosedLoopController()
-          .setReference(position, ControlType.kMAXMotionPositionControl);
-    }
+  public Command setTargetPosition(Double position) {
+    return this.runOnce(
+        () -> {
+          if (position != null) {
+            targetPosition = position;
+            leaderMotor
+                .getClosedLoopController()
+                .setReference(position, ControlType.kMAXMotionPositionControl);
+          }
+        });
   }
 
   public void rezeroPosition() {

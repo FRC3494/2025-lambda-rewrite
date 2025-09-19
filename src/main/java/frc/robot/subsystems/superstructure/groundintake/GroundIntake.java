@@ -3,6 +3,7 @@ package frc.robot.subsystems.superstructure.groundintake;
 import org.littletonrobotics.junction.Logger;
 
 import com.playingwithfusion.TimeOfFlight;
+import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkFlex;
@@ -11,6 +12,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -96,25 +98,30 @@ public class GroundIntake extends SubsystemBase {
     Logger.recordOutput("GroundIntake/DistanceSensorTripped", distanceSensorTripped());
   }
 
-  public void setTargetPivotPosition(Double position) {
-    if (position != null) {
-      targetPivotPosition = position;
-      pivotMotor
-          .getClosedLoopController()
-          .setReference(
-              position, com.revrobotics.spark.SparkBase.ControlType.kMAXMotionPositionControl);
-    }
+  public Command setTargetPivotPosition(Double position) {
+    return this.runOnce(
+        () -> {
+          if (position != null) {
+            targetPivotPosition = position;
+            pivotMotor
+                .getClosedLoopController()
+                .setReference(position, ControlType.kMAXMotionPositionControl);
+          }
+        });
   }
 
-  public void setIntakeSpeeds(Double frontSpeed, Double backSpeed) {
-    if (frontSpeed != null) {
-      targetFrontIntakeSpeed = frontSpeed;
-      frontIntakeMotor.set(frontSpeed);
-    }
-    if (backSpeed != null) {
-      targetBackIntakeSpeed = backSpeed;
-      backIntakeMotor.set(backSpeed);
-    }
+  public Command setIntakeSpeeds(Double frontSpeed, Double backSpeed) {
+    return this.runOnce(
+        () -> {
+          if (frontSpeed != null) {
+            targetFrontIntakeSpeed = frontSpeed;
+            frontIntakeMotor.set(frontSpeed);
+          }
+          if (backSpeed != null) {
+            targetBackIntakeSpeed = backSpeed;
+            backIntakeMotor.set(backSpeed);
+          }
+        });
   }
 
   public boolean distanceSensorTripped() {
@@ -123,5 +130,14 @@ public class GroundIntake extends SubsystemBase {
 
   public double getPivotPosition() {
     return pivotMotor.getAbsoluteEncoder().getPosition();
+  }
+
+  public boolean pastSafePosition() {
+    return getPivotPosition() < Constants.GroundIntake.safeAngle;
+  }
+
+  public boolean atSetpoint() {
+    return Math.abs(getPivotPosition() - targetPivotPosition)
+        < Constants.GroundIntake.pivotAllowedError;
   }
 }

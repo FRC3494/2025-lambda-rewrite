@@ -8,6 +8,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -35,10 +36,13 @@ public class Intake extends SubsystemBase {
     Logger.recordOutput("Intake/Current", intakeMotor.getOutputCurrent());
   }
 
-  public void setSpeed(Double speed) {
-    if (speed != null) {
-      targetSpeed = speed;
-      intakeMotor.set(speed);
-    }
+  public Command setSpeed(Double speed) {
+    return this.runOnce(
+        () -> {
+          if (speed != null) {
+            targetSpeed = speed;
+            intakeMotor.set(speed);
+          }
+        });
   }
 }
