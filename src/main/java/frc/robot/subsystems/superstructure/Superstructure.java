@@ -51,7 +51,7 @@ public class Superstructure extends SubsystemBase {
               from,
               to,
               SuperstructureStateEdge.builder()
-                  .command(SuperstructureStateEdges.getEdgeCommand(from, to))
+                  .command(getEdgeCommand(from, to))
                   .restricted(null)
                   .holdingAlgae(false)
                   .build());
