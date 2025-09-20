@@ -33,6 +33,7 @@ public class Superstructure extends SubsystemBase {
   private Intake intake;
   private GroundIntake groundIntake;
 
+  // @CodeScene(disable: "Large Method")
   public void SuperStructure(Elevator elevator, Arm arm, Intake intake, GroundIntake groundIntake) {
     this.elevator = elevator;
     this.arm = arm;
