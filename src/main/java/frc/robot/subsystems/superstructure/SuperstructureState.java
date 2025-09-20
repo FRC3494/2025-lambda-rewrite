@@ -8,153 +8,205 @@ public enum SuperstructureState {
 
   STOW(
       SuperstructureStateData.builder()
-          .elevatorHeight(Presets.Stow.elevatorHeight)
-          .armAngle(Presets.Stow.armAngle)
-          .intakeSpeed(Presets.Stow.intakeSpeed)
-          .groundIntakeAngle(Presets.Stow.groundIntakeAngle)
-          .groundIntakeFrontSpeed(Presets.Stow.groundIntakeFrontSpeed)
-          .groundIntakeBackSpeed(Presets.Stow.groundIntakeBackSpeed)
+          .elevatorHeight(0.0) // Positive is upwards
+          .armAngle(0.72) // TODO: Positive is toward (processor side or G-intake side)
+          .intakeSpeed(IntakeSpeeds.coralPassiveIntake) // Positive is algae intake / coral outtake
+          .groundIntakeAngle(0.31) // Positive is upwards
+          .groundIntakeFrontSpeed(0.0) // Positive is outtake
+          .groundIntakeBackSpeed(0.0) // Positive is intake
           .build()),
 
   // ==================== Ground Intake ====================
-  GROUND_INTAKE_FOR_TRANSFER(
+  // TODO: non-defense mode ground intake hover position is 0.05
+  GROUND_INTAKE_ARM_IN_BETWEEN(
       SuperstructureStateData.builder()
-          .elevatorHeight(Presets.GroundIntakeForTransfer.elevatorHeight)
-          .armAngle(Presets.GroundIntakeForTransfer.armAngle)
-          .intakeSpeed(Presets.GroundIntakeForTransfer.intakeSpeed)
-          .groundIntakeAngle(Presets.GroundIntakeForTransfer.groundIntakeAngle)
-          .groundIntakeFrontSpeed(Presets.GroundIntakeForTransfer.groundIntakeFrontSpeed)
-          .groundIntakeBackSpeed(Presets.GroundIntakeForTransfer.groundIntakeBackSpeed)
+          // TODO
+          .elevatorHeight(null)
+          .armAngle(null)
+          .groundIntakeAngle(null)
+          .build()),
+  PRE_GROUND_INTAKE_FOR_TRANSFER(
+      SuperstructureStateData.builder()
+          .elevatorHeight(0.0)
+          .armAngle(0.959)
+          .intakeSpeed(IntakeSpeeds.coralActiveIntake)
+          .groundIntakeAngle(0.0312)
+          .groundIntakeFrontSpeed(0.0)
+          .groundIntakeBackSpeed(0.0)
+          .build()),
+  GROUND_INTAKE_FOR_TRANSFER(
+      PRE_GROUND_INTAKE_FOR_TRANSFER.getValue().toBuilder()
+          .groundIntakeFrontSpeed(-0.85)
+          .groundIntakeBackSpeed(0.85)
           .build()),
   DONE_WITH_GROUND_INTAKE_FOR_TRANSFER(
-      SuperstructureStateData.builder()
-          .elevatorHeight(Presets.DoneWithGroundIntakeForTransfer.elevatorHeight)
-          .armAngle(Presets.DoneWithGroundIntakeForTransfer.armAngle)
-          .intakeSpeed(Presets.DoneWithGroundIntakeForTransfer.intakeSpeed)
-          .groundIntakeAngle(Presets.DoneWithGroundIntakeForTransfer.groundIntakeAngle)
-          .groundIntakeFrontSpeed(Presets.DoneWithGroundIntakeForTransfer.groundIntakeFrontSpeed)
-          .groundIntakeBackSpeed(Presets.DoneWithGroundIntakeForTransfer.groundIntakeBackSpeed)
+      GROUND_INTAKE_FOR_TRANSFER.getValue().toBuilder()
+          .intakeSpeed(IntakeSpeeds.coralPassiveIntake)
+          .groundIntakeAngle(0.05)
+          .groundIntakeFrontSpeed(0.0)
+          .groundIntakeBackSpeed(0.0)
           .build()),
+
   GROUND_INTAKE_FOR_L1(
-      SuperstructureStateData.builder()
-          .elevatorHeight(Presets.GroundIntakeForL1.elevatorHeight)
-          .armAngle(Presets.GroundIntakeForL1.armAngle)
-          .intakeSpeed(Presets.GroundIntakeForL1.intakeSpeed)
-          .groundIntakeAngle(Presets.GroundIntakeForL1.groundIntakeAngle)
-          .groundIntakeFrontSpeed(Presets.GroundIntakeForL1.groundIntakeFrontSpeed)
-          .groundIntakeBackSpeed(Presets.GroundIntakeForL1.groundIntakeBackSpeed)
+      STOW.getValue().toBuilder()
+          .intakeSpeed(0.0)
+          .groundIntakeAngle(0.0312)
+          .groundIntakeFrontSpeed(-0.85)
+          .groundIntakeBackSpeed(-0.6)
           .build()),
   GROUND_INTAKE_L1(
-      SuperstructureStateData.builder()
-          .elevatorHeight(Presets.GroundIntakeL1.elevatorHeight)
-          .armAngle(Presets.GroundIntakeL1.armAngle)
-          .groundIntakeAngle(Presets.GroundIntakeL1.groundIntakeAngle)
-          .groundIntakeFrontSpeed(Presets.GroundIntakeL1.groundIntakeFrontSpeed)
-          .groundIntakeBackSpeed(Presets.GroundIntakeL1.groundIntakeBackSpeed)
+      GROUND_INTAKE_FOR_L1.getValue().toBuilder()
+          .groundIntakeAngle(0.29)
+          .groundIntakeFrontSpeed(0.0)
+          .groundIntakeBackSpeed(0.0)
           .build()),
   GROUND_INTAKE_L1_PRE_JERK(
-      SuperstructureStateData.builder()
-          .elevatorHeight(Presets.GroundIntakeL1PreJerk.elevatorHeight)
-          .armAngle(Presets.GroundIntakeL1PreJerk.armAngle)
-          .groundIntakeAngle(Presets.GroundIntakeL1PreJerk.groundIntakeAngle)
-          .groundIntakeFrontSpeed(Presets.GroundIntakeL1PreJerk.groundIntakeFrontSpeed)
-          .groundIntakeBackSpeed(Presets.GroundIntakeL1PreJerk.groundIntakeBackSpeed)
+      GROUND_INTAKE_FOR_L1.getValue().toBuilder()
+          .groundIntakeAngle(0.36)
+          .groundIntakeFrontSpeed(0.25)
+          .groundIntakeBackSpeed(-0.25)
           .build()),
   GROUND_INTAKE_L1_JERK(
-      SuperstructureStateData.builder()
-          .elevatorHeight(Presets.GroundIntakeL1Jerk.elevatorHeight)
-          .armAngle(Presets.GroundIntakeL1Jerk.armAngle)
-          .groundIntakeAngle(Presets.GroundIntakeL1Jerk.groundIntakeAngle)
+      GROUND_INTAKE_FOR_L1.getValue().toBuilder()
+          .groundIntakeAngle(0.27)
+          .groundIntakeFrontSpeed(0.25)
+          .groundIntakeBackSpeed(-0.25)
           .build()),
 
   // ==================== Coral Intake w/ Arm ====================
-  FEEDER(
+  PRE_FEEDER(
       SuperstructureStateData.builder()
-          .elevatorHeight(Presets.Feeder.elevatorHeight)
-          .armAngle(Presets.Feeder.armAngle)
-          .intakeSpeed(Presets.Feeder.intakeSpeed)
-          .groundIntakeAngle(Presets.Feeder.groundIntakeAngle)
-          .groundIntakeFrontSpeed(Presets.Feeder.groundIntakeFrontSpeed)
-          .groundIntakeBackSpeed(Presets.Feeder.groundIntakeBackSpeed)
+          .elevatorHeight(10.0)
+          .armAngle(0.72)
+          .groundIntakeAngle(0.31)
+          .groundIntakeFrontSpeed(0.0)
+          .groundIntakeBackSpeed(0.0)
+          .build()),
+  FEEDER(
+      PRE_FEEDER.getValue().toBuilder()
+          .armAngle(0.845)
+          .intakeSpeed(IntakeSpeeds.coralActiveIntake)
+          // Comment for autoformat
           .build()),
 
   // ==================== Coral Outtake w/ Arm ====================
   ARM_L1_CORAL(
       SuperstructureStateData.builder()
-          .elevatorHeight(Presets.ArmL1Coral.elevatorHeight)
-          .armAngle(Presets.ArmL1Coral.armAngle)
-          .groundIntakeAngle(Presets.ArmL1Coral.groundIntakeAngle)
+          .elevatorHeight(8.38)
+          .armAngle(0.613)
+          // Comment for autoformat
           .build()),
   ARM_L1_CORAL_OUTTAKE(
-      ARM_L1_CORAL.getValue().toBuilder().intakeSpeed(Presets.IntakeSpeeds.coralOuttake).build()),
+      ARM_L1_CORAL.getValue().toBuilder()
+          .intakeSpeed(IntakeSpeeds.coralOuttake)
+          // Comment for autoformat
+          .build()),
   L2_CORAL(
       SuperstructureStateData.builder()
-          .elevatorHeight(Presets.L2Coral.elevatorHeight)
-          .armAngle(Presets.L2Coral.armAngle)
-          .groundIntakeAngle(Presets.L2Coral.groundIntakeAngle)
+          .elevatorHeight(20.0)
+          .armAngle(0.610)
+          // Comment for autoformat
           .build()),
   L2_CORAL_OUTTAKE(
-      L2_CORAL.getValue().toBuilder().intakeSpeed(Presets.IntakeSpeeds.coralOuttake).build()),
+      L2_CORAL.getValue().toBuilder()
+          .intakeSpeed(IntakeSpeeds.coralOuttake)
+          // Comment for autoformat
+          .build()),
   L3_CORAL(
       SuperstructureStateData.builder()
-          .elevatorHeight(Presets.L3Coral.elevatorHeight)
-          .armAngle(Presets.L3Coral.armAngle)
-          .groundIntakeAngle(Presets.L3Coral.groundIntakeAngle)
+          .elevatorHeight(44.5)
+          .armAngle(0.63)
+          // Comment for autoformat
           .build()),
   L3_CORAL_OUTTAKE(
-      L3_CORAL.getValue().toBuilder().intakeSpeed(Presets.IntakeSpeeds.coralOuttake).build()),
+      L3_CORAL.getValue().toBuilder()
+          .intakeSpeed(IntakeSpeeds.coralOuttake)
+          // Comment for autoformat
+          .build()),
 
   // ==================== Algae Intake ====================
+  // TODO: lollipop at some point?
   L2_ALGAE(
       SuperstructureStateData.builder()
-          .elevatorHeight(Presets.L2Algae.elevatorHeight)
-          .armAngle(Presets.L2Algae.armAngle)
-          .intakeSpeed(Presets.L2Algae.intakeSpeed)
-          .groundIntakeAngle(Presets.L2Algae.groundIntakeAngle)
+          .elevatorHeight(0.0)
+          .armAngle(0.62)
+          .intakeSpeed(IntakeSpeeds.algaeActiveIntake)
           .build()),
+  L2_ALGAE_UP(
+      SuperstructureStateData.builder()
+          .elevatorHeight(20.0)
+          .armAngle(0.610)
+          .intakeSpeed(IntakeSpeeds.algaeActiveIntake)
+          .build()),
+
   L3_ALGAE(
       SuperstructureStateData.builder()
-          .elevatorHeight(Presets.L3Algae.elevatorHeight)
-          .armAngle(Presets.L3Algae.armAngle)
-          .intakeSpeed(Presets.L3Algae.intakeSpeed)
-          .groundIntakeAngle(Presets.L3Algae.groundIntakeAngle)
+          .elevatorHeight(28.75)
+          .armAngle(0.632)
+          .intakeSpeed(IntakeSpeeds.algaeActiveIntake)
+          .build()),
+  L3_ALGAE_UP(
+      SuperstructureStateData.builder()
+          .elevatorHeight(44.5)
+          .armAngle(0.63)
+          .intakeSpeed(IntakeSpeeds.algaeActiveIntake)
           .build()),
 
   // ==================== Algae Outtake ====================
   PROCESSOR(
       SuperstructureStateData.builder()
-          .elevatorHeight(Presets.Processor.elevatorHeight)
-          .armAngle(Presets.Processor.armAngle)
-          .intakeSpeed(Presets.Processor.intakeSpeed)
-          .groundIntakeAngle(Presets.Processor.groundIntakeAngle)
+          .elevatorHeight(0.0)
+          .armAngle(0.54)
+          .intakeSpeed(IntakeSpeeds.algaePassiveIntake)
           .build()),
   PROCESSOR_OUTTAKE(
-      PROCESSOR.getValue().toBuilder().intakeSpeed(Presets.ProcessorOuttake.intakeSpeed).build()),
+      PROCESSOR.getValue().toBuilder()
+          .intakeSpeed(IntakeSpeeds.algaeOuttake)
+          // Comment for autoformat
+          .build()),
+
   PRE_BARGE(
       SuperstructureStateData.builder()
-          .elevatorHeight(Presets.PreBarge.elevatorHeight)
-          .armAngle(Presets.PreBarge.armAngle)
-          .intakeSpeed(Presets.PreBarge.intakeSpeed)
-          .groundIntakeAngle(Presets.PreBarge.groundIntakeAngle)
+          .elevatorHeight(44.5)
+          .armAngle(0.85) // TODO: speed during transition
+          .intakeSpeed(IntakeSpeeds.algaePassiveIntake)
+          .groundIntakeAngle(0.05)
+          .build()),
+  BARGING(
+      SuperstructureStateData.builder()
+          .elevatorHeight(44.5)
+          .armAngle(0.805)
+          .intakeSpeed(IntakeSpeeds.algaePassiveIntake)
           .build()),
   BARGE(
       SuperstructureStateData.builder()
-          .elevatorHeight(Presets.Barge.elevatorHeight)
-          .armAngle(Presets.Barge.armAngle)
-          .intakeSpeed(Presets.Barge.intakeSpeed)
-          .groundIntakeAngle(Presets.Barge.groundIntakeAngle)
+          .elevatorHeight(44.5)
+          .armAngle(0.65)
+          .intakeSpeed(IntakeSpeeds.algaeOuttake)
           .build()),
 
   // ==================== Pre-Climb ====================
   PRE_CLIMB(
       SuperstructureStateData.builder()
-          .elevatorHeight(Presets.PreClimb.elevatorHeight)
-          .armAngle(Presets.PreClimb.armAngle)
-          .intakeSpeed(Presets.PreClimb.intakeSpeed)
-          .groundIntakeAngle(Presets.PreClimb.groundIntakeAngle)
-          .groundIntakeFrontSpeed(Presets.PreClimb.groundIntakeFrontSpeed)
-          .groundIntakeBackSpeed(Presets.PreClimb.groundIntakeBackSpeed)
+          .elevatorHeight(20.0)
+          .armAngle(0.56)
+          .intakeSpeed(0.0)
+          .groundIntakeAngle(0.05)
+          .groundIntakeFrontSpeed(0.0)
+          .groundIntakeBackSpeed(0.0) // TODO: Climber
           .build());
+
+  public static final class IntakeSpeeds {
+    // TODO: tune
+    public static final double coralPassiveIntake = -0.3;
+    public static final double coralActiveIntake = -1.0;
+    public static final double coralOuttake = 1.0;
+
+    public static final double algaePassiveIntake = 0.5;
+    public static final double algaePassiveIntakeFast = 0.7; // For when arm flips around
+    public static final double algaeActiveIntake = 1.0;
+    public static final double algaeOuttake = -1.0;
+  }
 
   private final SuperstructureStateData value;
 

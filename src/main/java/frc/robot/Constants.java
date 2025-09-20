@@ -10,7 +10,6 @@ package frc.robot;
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.RobotConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -153,7 +152,10 @@ public final class Constants {
     public static final double kI = 0.0;
     public static final double kD = 0.0;
     public static final double outputRange = 1.0;
+    // TODO: tune to physical max, then swap out for actual max
+    public static final double physicalMaxVelocity = 0.0;
     public static final double maxVelocity = 0.0;
+    public static final double physicalMaxAcceleration = 0.0;
     public static final double maxAcceleration = 0.0;
     public static final double allowedError = 0.0;
   }
@@ -169,7 +171,10 @@ public final class Constants {
     public static final double kI = 0.0;
     public static final double kD = 0.0;
     public static final double outputRange = 1.0;
+    // TODO: tune to physical max, then swap out for actual max
+    public static final double physicalMaxVelocity = 0.0;
     public static final double maxVelocity = 0.0;
+    public static final double physicalMaxAcceleration = 0.0;
     public static final double maxAcceleration = 0.0;
     public static final double allowedError = 0.0;
 
@@ -195,7 +200,10 @@ public final class Constants {
     public static final double pivotkI = 0.0;
     public static final double pivotkD = 0.0;
     public static final double pivotOutputRange = 1.0;
+    // TODO: tune to physical max, then swap out for actual max
+    public static final double physicalPivotMaxVelocity = 0.0;
     public static final double pivotMaxVelocity = 0.0;
+    public static final double physicalPivotMaxAcceleration = 0.0;
     public static final double pivotMaxAcceleration = 0.0;
     public static final double pivotAllowedError = 0.0;
 

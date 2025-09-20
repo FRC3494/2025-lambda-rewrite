@@ -12,13 +12,12 @@ import org.littletonrobotics.junction.Logger;
 
 public class Intake extends SubsystemBase {
   private SparkMax intakeMotor;
-  private SparkMaxConfig intakeMotorConfig;
 
   private double targetSpeed = 0.0;
 
   public Intake() {
     intakeMotor = new SparkMax(Constants.Intake.intakeMotorCanId, MotorType.kBrushless);
-    intakeMotorConfig = new SparkMaxConfig();
+    SparkMaxConfig intakeMotorConfig = new SparkMaxConfig();
     intakeMotorConfig
         .idleMode(Constants.Intake.intakeMotorIdleMode)
         .inverted(Constants.Intake.intakeMotorInverted)

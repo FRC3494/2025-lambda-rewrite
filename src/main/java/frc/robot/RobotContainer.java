@@ -7,10 +7,7 @@
 
 package frc.robot;
 
-import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
-
 import com.pathplanner.lib.auto.AutoBuilder;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -30,6 +27,7 @@ import frc.robot.subsystems.superstructure.Superstructure;
 import frc.robot.subsystems.superstructure.arm.Arm;
 import frc.robot.subsystems.superstructure.groundintake.GroundIntake;
 import frc.robot.subsystems.superstructure.intake.Intake;
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -87,7 +85,7 @@ public class RobotContainer {
     }
 
     elevator = new Elevator();
-    arm = Arm.getInstance();
+    arm = new Arm();
     intake = new Intake();
     groundIntake = new GroundIntake();
     superstructure = new Superstructure();

@@ -14,10 +14,7 @@ import org.littletonrobotics.junction.Logger;
 
 public class Elevator extends SubsystemBase {
   private SparkMax leaderMotor;
-  private SparkMaxConfig leaderMotorConfig;
-
   private SparkMax followerMotor;
-  private SparkMaxConfig followerMotorConfig;
 
   private double targetPosition = 0.0;
 
@@ -25,7 +22,7 @@ public class Elevator extends SubsystemBase {
 
   public Elevator() {
     leaderMotor = new SparkMax(Constants.Elevator.leaderMotorCanId, MotorType.kBrushless);
-    leaderMotorConfig = new SparkMaxConfig();
+    SparkMaxConfig leaderMotorConfig = new SparkMaxConfig();
     leaderMotorConfig
         .idleMode(Constants.Elevator.motorIdleMode)
         .inverted(Constants.Elevator.leaderMotorInverted)
@@ -37,12 +34,12 @@ public class Elevator extends SubsystemBase {
     leaderMotorConfig
         .closedLoop
         .maxMotion
-        .maxVelocity(Constants.Elevator.maxVelocity)
-        .maxAcceleration(Constants.Elevator.maxAcceleration)
+        .maxVelocity(Constants.Elevator.physicalMaxVelocity)
+        .maxAcceleration(Constants.Elevator.physicalMaxAcceleration)
         .allowedClosedLoopError(Constants.Elevator.allowedError);
 
     followerMotor = new SparkMax(Constants.Elevator.followerMotorCanId, MotorType.kBrushless);
-    followerMotorConfig = new SparkMaxConfig();
+    SparkMaxConfig followerMotorConfig = new SparkMaxConfig();
     followerMotorConfig
         .idleMode(Constants.Elevator.motorIdleMode)
         .inverted(Constants.Elevator.followerMotorInverted)
@@ -64,6 +61,7 @@ public class Elevator extends SubsystemBase {
     }
 
     Logger.recordOutput("Elevator/TargetPosition", targetPosition);
+    Logger.recordOutput("Elevator/Position", getPosition());
     Logger.recordOutput("Elevator/LeaderPosition", leaderMotor.getEncoder().getPosition());
     Logger.recordOutput("Elevator/FollowerPosition", followerMotor.getEncoder().getPosition());
     Logger.recordOutput("Elevator/LeaderOutput", leaderMotor.getAppliedOutput());
@@ -93,5 +91,14 @@ public class Elevator extends SubsystemBase {
 
   public boolean bottomSensorTripped() {
     return bottomMagSensor.get();
+  }
+
+  public double getPosition() {
+    // TODO: figure out which motor is better for position
+    return leaderMotor.getEncoder().getPosition();
+  }
+
+  public boolean atSetpoint() {
+    return Math.abs(getPosition() - targetPosition) < Constants.Arm.positionDeadband;
   }
 }

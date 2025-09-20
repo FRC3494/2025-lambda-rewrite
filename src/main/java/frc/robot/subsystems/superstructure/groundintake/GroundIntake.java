@@ -1,7 +1,5 @@
 package frc.robot.subsystems.superstructure.groundintake;
 
-import org.littletonrobotics.junction.Logger;
-
 import com.playingwithfusion.TimeOfFlight;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
@@ -11,34 +9,26 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkMaxConfig;
-
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants;
-import frc.robot.subsystems.superstructure.arm.Arm;
+import org.littletonrobotics.junction.Logger;
 
 public class GroundIntake extends SubsystemBase {
-  private static GroundIntake instance = null;
-
   private SparkFlex pivotMotor;
-  private SparkMaxConfig pivotMotorConfig;
   private double targetPivotPosition = 0.0;
 
   private SparkMax frontIntakeMotor;
-  private SparkMaxConfig frontIntakeMotorConfig;
   private double targetFrontIntakeSpeed = 0.0;
 
   private SparkMax backIntakeMotor;
-  private SparkMaxConfig backIntakeMotorConfig;
   private double targetBackIntakeSpeed = 0.0;
 
   private TimeOfFlight distanceSensor;
 
-  private GroundIntake() {
+  public GroundIntake() {
     pivotMotor = new SparkFlex(Constants.GroundIntake.pivotMotorCanId, MotorType.kBrushless);
-    pivotMotorConfig = new SparkMaxConfig();
+    SparkMaxConfig pivotMotorConfig = new SparkMaxConfig();
     pivotMotorConfig
         .idleMode(Constants.GroundIntake.pivotMotorIdleMode)
         .inverted(Constants.GroundIntake.pivotMotorInverted)
@@ -55,15 +45,15 @@ public class GroundIntake extends SubsystemBase {
     pivotMotorConfig
         .closedLoop
         .maxMotion
-        .maxVelocity(Constants.GroundIntake.pivotMaxVelocity)
-        .maxAcceleration(Constants.GroundIntake.pivotMaxAcceleration)
+        .maxVelocity(Constants.GroundIntake.physicalPivotMaxVelocity)
+        .maxAcceleration(Constants.GroundIntake.physicalPivotMaxAcceleration)
         .allowedClosedLoopError(Constants.GroundIntake.pivotAllowedError);
     pivotMotor.configure(
         pivotMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     frontIntakeMotor =
         new SparkMax(Constants.GroundIntake.frontIntakeMotorCanId, MotorType.kBrushless);
-    frontIntakeMotorConfig = new SparkMaxConfig();
+    SparkMaxConfig frontIntakeMotorConfig = new SparkMaxConfig();
     frontIntakeMotorConfig
         .idleMode(Constants.GroundIntake.intakeMotorIdleMode)
         .inverted(Constants.GroundIntake.frontIntakeMotorInverted)
@@ -73,7 +63,7 @@ public class GroundIntake extends SubsystemBase {
 
     backIntakeMotor =
         new SparkMax(Constants.GroundIntake.backIntakeMotorCanId, MotorType.kBrushless);
-    backIntakeMotorConfig = new SparkMaxConfig();
+    SparkMaxConfig backIntakeMotorConfig = new SparkMaxConfig();
     backIntakeMotorConfig
         .idleMode(Constants.GroundIntake.intakeMotorIdleMode)
         .inverted(Constants.GroundIntake.backIntakeMotorInverted)
@@ -82,13 +72,6 @@ public class GroundIntake extends SubsystemBase {
         backIntakeMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     distanceSensor = new TimeOfFlight(Constants.GroundIntake.distanceSensorDeviceNumber);
-  }
-
-  public static GroundIntake getInstance() {
-    if (instance == null) {
-      instance = new GroundIntake();
-    }
-    return instance;
   }
 
   @Override
@@ -111,17 +94,15 @@ public class GroundIntake extends SubsystemBase {
   }
 
   public Command setTargetPivotPosition(Double position) {
-    return Commands.sequence(
-        new WaitUntilCommand(Arm.getInstance()::pastSafePosition),
-        this.runOnce(
-            () -> {
-              if (position != null) {
-                targetPivotPosition = position;
-                pivotMotor
-                    .getClosedLoopController()
-                    .setReference(position, ControlType.kMAXMotionPositionControl);
-              }
-            }));
+    return this.runOnce(
+        () -> {
+          if (position != null) {
+            targetPivotPosition = position;
+            pivotMotor
+                .getClosedLoopController()
+                .setReference(position, ControlType.kMAXMotionPositionControl);
+          }
+        });
   }
 
   public Command setIntakeSpeeds(Double frontSpeed, Double backSpeed) {
