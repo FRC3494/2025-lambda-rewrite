@@ -7,9 +7,9 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public final class OI {
   private static EventLoop eventLoop = new EventLoop();
-  public static CommandXboxController primaryController = new CommandXboxController(0);
-  public static Joystick leftButtonBoard = new Joystick(1);
-  public static Joystick rightButtonBoard = new Joystick(2);
+  private static CommandXboxController primaryController = new CommandXboxController(0);
+  private static Joystick leftButtonBoard = new Joystick(1);
+  private static Joystick rightButtonBoard = new Joystick(2);
 
   public static void update() {
     eventLoop.poll();
@@ -49,5 +49,87 @@ public final class OI {
     public static Trigger rezeroGyro() {
       return primaryController.back(eventLoop);
     }
+  }
+
+  // TODO: toggle defense sensor?
+  // TODO: auto align
+
+  // ==================== Stow ====================
+  public static Trigger stow() {
+    return rightButtonBoard.button(6, eventLoop).castTo(Trigger::new);
+  }
+
+  // ==================== Ground Intake ====================
+  public static Trigger groundIntakeForTransfer() {
+    return primaryController.rightTrigger(0.05, eventLoop);
+  }
+
+  public static Trigger groundIntakeForL1() {
+    return primaryController.a(eventLoop);
+  }
+
+  public static Trigger groundIntakeL1Outtake() {
+    return rightButtonBoard.button(10, eventLoop).castTo(Trigger::new);
+  }
+
+  public static Trigger groundIntakeManualOuttake() {
+    return rightButtonBoard.button(8, eventLoop).castTo(Trigger::new);
+  }
+
+  // ==================== Coral Intake w/ Arm ====================
+  public static Trigger feeder() {
+    return leftButtonBoard.button(6, eventLoop).castTo(Trigger::new);
+  }
+
+  // ==================== Coral Outtake w/ Arm ====================
+  public static Trigger armL1Coral() {
+    return leftButtonBoard.button(10, eventLoop).castTo(Trigger::new);
+  }
+
+  public static Trigger L2Coral() {
+    return leftButtonBoard.button(5, eventLoop).castTo(Trigger::new);
+  }
+
+  public static Trigger L3Coral() {
+    return leftButtonBoard.button(2, eventLoop).castTo(Trigger::new);
+  }
+
+  // ==================== Algae Intake ====================
+  public static Trigger L2Algae() {
+    return leftButtonBoard.button(4, eventLoop).castTo(Trigger::new);
+  }
+
+  public static Trigger L3Algae() {
+    return leftButtonBoard.button(1, eventLoop).castTo(Trigger::new);
+  }
+
+  // ==================== Algae Outtake ====================
+  public static Trigger processor() {
+    return leftButtonBoard.button(8, eventLoop).castTo(Trigger::new);
+  }
+
+  public static Trigger preBarge() {
+    return leftButtonBoard.button(9, eventLoop).castTo(Trigger::new);
+  }
+
+  public static Trigger barge() {
+    return leftButtonBoard.button(7, eventLoop).castTo(Trigger::new);
+  }
+
+  // ==================== Climb ====================
+  public static Trigger preClimb() {
+    return rightButtonBoard.button(1, eventLoop).castTo(Trigger::new);
+  }
+
+  public static Trigger climbStage1() {
+    return rightButtonBoard.button(2, eventLoop).castTo(Trigger::new);
+  }
+
+  public static Trigger climbStage2() {
+    return rightButtonBoard.button(3, eventLoop).castTo(Trigger::new);
+  }
+
+  public static Trigger climbStage3() {
+    return rightButtonBoard.button(4, eventLoop).castTo(Trigger::new);
   }
 }

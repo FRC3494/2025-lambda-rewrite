@@ -78,6 +78,7 @@ public class GroundIntake extends SubsystemBase {
   public void periodic() {
     Logger.recordOutput("GroundIntake/TargetPivotPosition", targetPivotPosition);
     Logger.recordOutput("GroundIntake/PivotPosition", getPivotPosition());
+    Logger.recordOutput("GroundIntake/AtSetpoint", atSetpoint());
     Logger.recordOutput("GroundIntake/PivotOutput", pivotMotor.getAppliedOutput());
     Logger.recordOutput("GroundIntake/PivotCurrent", pivotMotor.getOutputCurrent());
 

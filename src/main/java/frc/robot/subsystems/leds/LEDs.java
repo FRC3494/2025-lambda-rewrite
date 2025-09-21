@@ -9,7 +9,7 @@ import org.littletonrobotics.junction.Logger;
 public class LEDs extends SubsystemBase {
   private Spark leds;
 
-  private LEDPattern pattern = LEDPattern.DISABLED;
+  private LEDLightPattern pattern = LEDLightPattern.DISABLED;
 
   public LEDs() {
     leds = new Spark(Constants.LEDs.ledPwmId);
@@ -21,7 +21,7 @@ public class LEDs extends SubsystemBase {
     Logger.recordOutput("LEDs/Pattern", pattern.name());
   }
 
-  public Command setPattern(LEDPattern pattern) {
+  public Command setPattern(LEDLightPattern pattern) {
     return this.runOnce(
             () -> {
               this.pattern = pattern;
@@ -30,7 +30,7 @@ public class LEDs extends SubsystemBase {
         .ignoringDisable(true);
   }
 
-  public static enum LEDPattern {
+  public static enum LEDLightPattern {
     DISABLED(Constants.LEDs.disabledColor),
     NONE(Constants.LEDs.noneColor),
     HAS_GAMEPIECE(Constants.LEDs.hasGamepieceColor),
@@ -39,7 +39,7 @@ public class LEDs extends SubsystemBase {
 
     public final double value;
 
-    private LEDPattern(double value) {
+    private LEDLightPattern(double value) {
       this.value = value;
     }
   }

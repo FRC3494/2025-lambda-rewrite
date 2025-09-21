@@ -23,7 +23,10 @@ public enum SuperstructureState {
           // TODO
           .elevatorHeight(null)
           .armAngle(null)
+          .intakeSpeed(IntakeSpeeds.coralPassiveIntake)
           .groundIntakeAngle(null)
+          .groundIntakeFrontSpeed(0.0)
+          .groundIntakeBackSpeed(0.0)
           .build()),
   PRE_GROUND_INTAKE_FOR_TRANSFER(
       SuperstructureStateData.builder()
@@ -185,13 +188,22 @@ public enum SuperstructureState {
           .intakeSpeed(IntakeSpeeds.algaeOuttake)
           .build()),
 
-  // ==================== Pre-Climb ====================
+  // ==================== Climb ====================
   PRE_CLIMB(
       SuperstructureStateData.builder()
           .elevatorHeight(20.0)
           .armAngle(0.56)
           .intakeSpeed(0.0)
           .groundIntakeAngle(0.05)
+          .groundIntakeFrontSpeed(0.0)
+          .groundIntakeBackSpeed(0.0) // TODO: Climber
+          .build()),
+  CLIMB(
+      SuperstructureStateData.builder()
+          .elevatorHeight(20.0)
+          .armAngle(0.56)
+          .intakeSpeed(0.0)
+          .groundIntakeAngle(0.31)
           .groundIntakeFrontSpeed(0.0)
           .groundIntakeBackSpeed(0.0) // TODO: Climber
           .build());

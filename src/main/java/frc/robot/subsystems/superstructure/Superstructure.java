@@ -1,13 +1,5 @@
 package frc.robot.subsystems.superstructure;
 
-import java.util.Optional;
-
-import org.jgrapht.Graph;
-import org.jgrapht.alg.shortestpath.BFSShortestPath;
-import org.jgrapht.graph.DefaultDirectedGraph;
-import org.jgrapht.graph.MaskSubgraph;
-import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -18,6 +10,12 @@ import frc.robot.subsystems.superstructure.arm.Arm;
 import frc.robot.subsystems.superstructure.elevator.Elevator;
 import frc.robot.subsystems.superstructure.groundintake.GroundIntake;
 import frc.robot.subsystems.superstructure.intake.Intake;
+import java.util.Optional;
+import org.jgrapht.Graph;
+import org.jgrapht.alg.shortestpath.BFSShortestPath;
+import org.jgrapht.graph.DefaultDirectedGraph;
+import org.jgrapht.graph.MaskSubgraph;
+import org.littletonrobotics.junction.Logger;
 
 public class Superstructure extends SubsystemBase {
   private final Graph<SuperstructureState, SuperstructureStateEdge> graph =
@@ -25,7 +23,7 @@ public class Superstructure extends SubsystemBase {
 
   private SuperstructureState currentState = SuperstructureState.IDLE;
   private SuperstructureState nextState;
-  private SuperstructureState targetState = SuperstructureState.IDLE;
+  private SuperstructureState currentTargetState = SuperstructureState.IDLE;
   private SuperstructureStateEdge currentEdge;
 
   private Elevator elevator;
@@ -34,7 +32,7 @@ public class Superstructure extends SubsystemBase {
   private GroundIntake groundIntake;
 
   // @CodeScene(disable: "Large Method")
-  public void SuperStructure(Elevator elevator, Arm arm, Intake intake, GroundIntake groundIntake) {
+  public Superstructure(Elevator elevator, Arm arm, Intake intake, GroundIntake groundIntake) {
     this.elevator = elevator;
     this.arm = arm;
     this.intake = intake;
@@ -46,6 +44,7 @@ public class Superstructure extends SubsystemBase {
 
     // * Graph:
     // * https://drive.google.com/file/d/1gaeQf5e-YUqPdkdRdQKs4Trm9OZLYEAZ/view?usp=drive_link
+
     for (var from : SuperstructureStateEdges.safeNoAlgaeFromStates) {
       for (var to : SuperstructureStateEdges.safeNoAlgaeToStates) {
         if (!from.equals(to)) {
@@ -76,6 +75,17 @@ public class Superstructure extends SubsystemBase {
         null,
         false);
 
+    addEdge(
+        SuperstructureState.PRE_GROUND_INTAKE_FOR_TRANSFER,
+        SuperstructureState.GROUND_INTAKE_ARM_IN_BETWEEN,
+        null,
+        false);
+    addEdge(
+        SuperstructureState.GROUND_INTAKE_FOR_TRANSFER,
+        SuperstructureState.GROUND_INTAKE_ARM_IN_BETWEEN,
+        null,
+        false);
+
     // ==================== Ground Intake for L1 ====================
     addEdge(
         SuperstructureState.GROUND_INTAKE_FOR_L1,
@@ -92,6 +102,9 @@ public class Superstructure extends SubsystemBase {
         SuperstructureState.GROUND_INTAKE_L1_JERK,
         SuperstructureState.GROUND_INTAKE_L1_JERK,
         false);
+
+    addEdge(SuperstructureState.GROUND_INTAKE_FOR_L1, SuperstructureState.STOW, null, false);
+    addEdge(SuperstructureState.GROUND_INTAKE_L1_PRE_JERK, SuperstructureState.STOW, null, false);
 
     // ==================== Feeder ====================
     addEdge(
@@ -202,13 +215,18 @@ public class Superstructure extends SubsystemBase {
         false);
     addEdge(
         SuperstructureState.BARGING, SuperstructureState.BARGE, SuperstructureState.BARGE, false);
+
+    // ==================== Climb ====================
+    addEdge(
+        SuperstructureState.PRE_CLIMB, SuperstructureState.CLIMB, SuperstructureState.CLIMB, false);
+    addEdge(SuperstructureState.CLIMB, SuperstructureState.PRE_CLIMB, null, false);
   }
 
   @Override
   // @CodeScene(disable: "Bumpy Road Ahead")
   public void periodic() {
     if (DriverStation.isDisabled()) {
-      targetState = currentState;
+      currentTargetState = currentState;
       nextState = null;
     } else if (currentEdge == null || !currentEdge.getCommand().isScheduled()) {
       if (nextState != null) {
@@ -220,8 +238,8 @@ public class Superstructure extends SubsystemBase {
       }
     }
 
-    if (currentState != targetState) {
-      getNextState(currentState, targetState)
+    if (currentState != currentTargetState) {
+      getNextState(currentState, currentTargetState)
           .ifPresent(
               (next) -> {
                 if (!this.nextState.equals(next)) {
@@ -232,7 +250,7 @@ public class Superstructure extends SubsystemBase {
 
     Logger.recordOutput("Superstructure/CurrentState", currentState.toString());
     Logger.recordOutput("Superstructure/NextState", nextState.toString());
-    Logger.recordOutput("Superstructure/TargetState", targetState.toString());
+    Logger.recordOutput("Superstructure/TargetState", currentTargetState.toString());
   }
 
   private Optional<SuperstructureState> getNextState(
@@ -299,6 +317,30 @@ public class Superstructure extends SubsystemBase {
     } else {
       return Commands.sequence(intake.setSpeed(toData.getIntakeSpeed()), goToState);
     }
+  }
+
+  public Command setCurrentTargetState(SuperstructureState state) {
+    return this.runOnce(
+        () -> {
+          currentTargetState = state;
+        });
+  }
+
+  public Command resumeCurrentState() {
+    return this.runOnce(
+        () -> {
+          Commands.sequence(
+                  elevator.setTargetPosition(currentState.getValue().getElevatorHeight()),
+                  arm.setTargetPosition(currentState.getValue().getArmAngle()),
+                  intake.setSpeed(currentState.getValue().getIntakeSpeed()),
+                  groundIntake.setTargetPivotPosition(
+                      currentState.getValue().getGroundIntakeAngle()),
+                  groundIntake.setIntakeSpeeds(
+                      currentState.getValue().getGroundIntakeFrontSpeed(),
+                      currentState.getValue().getGroundIntakeBackSpeed()),
+                  new WaitUntilCommand(this::atSetpoint))
+              .schedule();
+        });
   }
 
   public boolean atSetpoint() {

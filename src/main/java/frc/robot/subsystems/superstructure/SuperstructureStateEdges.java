@@ -19,7 +19,9 @@ public class SuperstructureStateEdges {
       Set.of(
           SuperstructureState.STOW,
           SuperstructureState.GROUND_INTAKE_ARM_IN_BETWEEN,
+          SuperstructureState.GROUND_INTAKE_FOR_L1,
           SuperstructureState.GROUND_INTAKE_L1,
+          SuperstructureState.GROUND_INTAKE_L1_PRE_JERK,
           SuperstructureState.GROUND_INTAKE_L1_JERK,
           SuperstructureState.PRE_FEEDER,
           SuperstructureState.ARM_L1_CORAL,
@@ -35,6 +37,7 @@ public class SuperstructureStateEdges {
           SuperstructureState.PROCESSOR,
           SuperstructureState.PROCESSOR_OUTTAKE,
           SuperstructureState.PRE_BARGE,
+          SuperstructureState.BARGING,
           SuperstructureState.BARGE,
           SuperstructureState.PRE_CLIMB);
   public static final Set<SuperstructureState> safeNoAlgaeToStates =

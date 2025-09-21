@@ -62,6 +62,7 @@ public class Elevator extends SubsystemBase {
 
     Logger.recordOutput("Elevator/TargetPosition", targetPosition);
     Logger.recordOutput("Elevator/Position", getPosition());
+    Logger.recordOutput("Elevator/AtSetpoint", atSetpoint());
     Logger.recordOutput("Elevator/LeaderPosition", leaderMotor.getEncoder().getPosition());
     Logger.recordOutput("Elevator/FollowerPosition", followerMotor.getEncoder().getPosition());
     Logger.recordOutput("Elevator/LeaderOutput", leaderMotor.getAppliedOutput());

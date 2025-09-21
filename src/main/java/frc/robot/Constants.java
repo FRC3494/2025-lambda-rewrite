@@ -225,8 +225,27 @@ public final class Constants {
   }
 
   public static class Climber {
+    public static final int climberMotorCanId = 6;
+    public static final boolean climberMotorInverted = false;
+    public static final IdleMode climberMotorIdleMode = IdleMode.kCoast;
+    public static final int climberMotorCurrentLimit = 13;
+
+    // TODO: tune
+    public static final double kP = 2.0;
+    public static final double kI = 0.0;
+    public static final double kD = 0.0;
+    public static final double outputRange = 1.0;
+    // TODO: tune to physical max, then swap out for actual max
+    public static final double physicalMaxVelocity = 0.0;
+    public static final double maxVelocity = 0.0;
+    public static final double physicalMaxAcceleration = 0.0;
+    public static final double maxAcceleration = 0.0;
+    public static final double allowedError = 0.0;
+
+    public static final double positionDeadband = 0.05;
+
     // TODO: find a better place to put these presets
-    public static final double stage0Angle = 0.0;
+    public static final double preClimbAngle = 0.0;
     public static final double stage1Angle = -28.0;
     public static final double stage2Angle = -53.4;
   }
