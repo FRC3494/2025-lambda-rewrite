@@ -31,6 +31,9 @@ import frc.robot.subsystems.superstructure.arm.Arm;
 import frc.robot.subsystems.superstructure.elevator.Elevator;
 import frc.robot.subsystems.superstructure.groundintake.GroundIntake;
 import frc.robot.subsystems.superstructure.intake.Intake;
+import frc.robot.subsystems.vision.apriltagvision.AprilTagVision;
+import frc.robot.subsystems.vision.apriltagvision.AprilTagVisionIO;
+import frc.robot.subsystems.vision.apriltagvision.AprilTagVisionIOLimelight;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -42,6 +45,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
+  private final AprilTagVision aprilTagVision;
 
   private final Elevator elevator;
   private final Arm arm;
@@ -57,40 +61,70 @@ public class RobotContainer {
   private final LoggedDashboardChooser<Command> autoChooser;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
+  // @CodeScene(disable: "Large Method")
   public RobotContainer() {
     switch (Constants.currentMode) {
       case REAL:
-        // Real robot, instantiate hardware IO implementations
-        drive =
-            new Drive(
-                new GyroIOPigeon2(),
-                new ModuleIOSpark(0),
-                new ModuleIOSpark(1),
-                new ModuleIOSpark(2),
-                new ModuleIOSpark(3));
-        break;
+        {
+          // Real robot, instantiate hardware IO implementations
+          drive =
+              new Drive(
+                  new GyroIOPigeon2(),
+                  new ModuleIOSpark(0),
+                  new ModuleIOSpark(1),
+                  new ModuleIOSpark(2),
+                  new ModuleIOSpark(3));
+          aprilTagVision =
+              new AprilTagVision(
+                  drive::addVisionMeasurement,
+                  new AprilTagVisionIOLimelight("limelight-right", drive::getRotation),
+                  new AprilTagVisionIOLimelight("limelight-left", drive::getRotation),
+                  new AprilTagVisionIOLimelight("limelight-swerve", drive::getRotation),
+                  new AprilTagVisionIOLimelight("limelight-barge", drive::getRotation));
+          break;
+        }
 
       case SIM:
-        // Sim robot, instantiate physics sim IO implementations
-        drive =
-            new Drive(
-                new GyroIO() {},
-                new ModuleIOSim(),
-                new ModuleIOSim(),
-                new ModuleIOSim(),
-                new ModuleIOSim());
-        break;
+        {
+          // Sim robot, instantiate physics sim IO implementations
+          drive =
+              new Drive(
+                  new GyroIO() {},
+                  new ModuleIOSim(),
+                  new ModuleIOSim(),
+                  new ModuleIOSim(),
+                  new ModuleIOSim());
+          aprilTagVision =
+              new AprilTagVision(
+                  drive::addVisionMeasurement,
+                  new AprilTagVisionIO() {},
+                  new AprilTagVisionIO() {},
+                  new AprilTagVisionIO() {},
+                  new AprilTagVisionIO() {},
+                  new AprilTagVisionIO() {});
+          break;
+        }
 
       default:
-        // Replayed robot, disable IO implementations
-        drive =
-            new Drive(
-                new GyroIO() {},
-                new ModuleIO() {},
-                new ModuleIO() {},
-                new ModuleIO() {},
-                new ModuleIO() {});
-        break;
+        {
+          // Replayed robot, disable IO implementations
+          drive =
+              new Drive(
+                  new GyroIO() {},
+                  new ModuleIO() {},
+                  new ModuleIO() {},
+                  new ModuleIO() {},
+                  new ModuleIO() {});
+          aprilTagVision =
+              new AprilTagVision(
+                  drive::addVisionMeasurement,
+                  new AprilTagVisionIO() {},
+                  new AprilTagVisionIO() {},
+                  new AprilTagVisionIO() {},
+                  new AprilTagVisionIO() {},
+                  new AprilTagVisionIO() {});
+          break;
+        }
     }
 
     elevator = new Elevator();
