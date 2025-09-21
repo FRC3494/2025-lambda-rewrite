@@ -63,6 +63,12 @@ public final class OI {
     }
   }
 
+  public static final class AutoAlign {
+    public static Trigger coral() {
+      return primaryController.b(eventLoop);
+    }
+  }
+
   // TODO: toggle defense sensor?
   // TODO: auto align
 

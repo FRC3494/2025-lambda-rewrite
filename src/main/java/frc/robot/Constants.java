@@ -141,10 +141,12 @@ public final class Constants {
     public static AprilTagFieldLayout aprilTagLayout =
         AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeAndyMark);
 
-    // TODO: not used for limelight
     // Camera names, must match names configured on coprocessor
-    public static String camera0Name = "camera_0";
-    public static String camera1Name = "camera_1";
+    public static String limelightRightName = "limelight-right";
+    public static String limelightLeftName = "limelight-left";
+    public static String limelightSwerveName = "limelight-swerve";
+    public static String limelightBargeName = "limelight-barge";
+    public static String limelightCoralName = "limelight-coral";
 
     // TODO: not used for limelight
     // Robot to camera transforms

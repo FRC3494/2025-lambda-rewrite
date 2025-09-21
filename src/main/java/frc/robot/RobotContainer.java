@@ -7,7 +7,10 @@
 
 package frc.robot;
 
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+
 import com.pathplanner.lib.auto.AutoBuilder;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -36,7 +39,6 @@ import frc.robot.subsystems.superstructure.intake.Intake;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOLimelight;
-import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -79,10 +81,10 @@ public class RobotContainer {
           aprilTagVision =
               new Vision(
                   drive::addVisionMeasurement,
-                  new VisionIOLimelight("limelight-right", drive::getRotation),
-                  new VisionIOLimelight("limelight-left", drive::getRotation),
-                  new VisionIOLimelight("limelight-swerve", drive::getRotation),
-                  new VisionIOLimelight("limelight-barge", drive::getRotation));
+                  new VisionIOLimelight(Constants.Vision.limelightRightName, drive::getRotation),
+                  new VisionIOLimelight(Constants.Vision.limelightLeftName, drive::getRotation),
+                  new VisionIOLimelight(Constants.Vision.limelightSwerveName, drive::getRotation),
+                  new VisionIOLimelight(Constants.Vision.limelightBargeName, drive::getRotation));
           break;
         }
 
@@ -175,9 +177,11 @@ public class RobotContainer {
 
     // * ================ Drive ================
 
+    Command normalDriveCommand =
+        DriveCommands.joystickDrive(drive, OI.Drive::getX, OI.Drive::getY, OI.Drive::getOmega);
+
     // Default command, normal field-relative drive
-    drive.setDefaultCommand(
-        DriveCommands.joystickDrive(drive, OI.Drive::getX, OI.Drive::getY, OI.Drive::getOmega));
+    drive.setDefaultCommand(normalDriveCommand);
 
     // Switch to X pattern when X button is pressed
     OI.Drive.stopWithX().onTrue(Commands.runOnce(drive::stopWithX, drive));
@@ -191,6 +195,19 @@ public class RobotContainer {
                             new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
                     drive)
                 .ignoringDisable(true));
+
+    // ==================== Auto-Align ====================
+    OI.AutoAlign.coral()
+        .onTrue(
+            Commands.runOnce(
+                () -> {
+                  drive.setDefaultCommand(DriveCommands.coralAutoAlign(drive));
+                }))
+        .onFalse(
+            Commands.runOnce(
+                () -> {
+                  drive.setDefaultCommand(normalDriveCommand);
+                }));
 
     // TODO: toggle defense sensor?
     // TODO: auto align

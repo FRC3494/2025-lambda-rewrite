@@ -22,8 +22,10 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import frc.robot.Constants;
 import frc.robot.subsystems.drive.Drive;
+import frc.robot.util.LimelightHelpers;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.LinkedList;
@@ -292,5 +294,25 @@ public class DriveCommands {
     double[] positions = new double[4];
     Rotation2d lastAngle = new Rotation2d();
     double gyroDelta = 0.0;
+  }
+
+  public static Command coralAutoAlign(Drive drive) {
+    return new FunctionalCommand(
+        null,
+        () -> {
+          if (!LimelightHelpers.getTV(Constants.Vision.limelightCoralName)) {
+            drive.runVelocity(new ChassisSpeeds(0.0, 0.0, 0.0));
+            return;
+          }
+
+          // TODO: drive forward and/or strafe?
+          // TODO:https://github.com/DeepBlueRobotics/RobotCode2024/blob/master/src/main/java/org/carlmontrobotics/commands/AutoMATICALLYGetNote.java
+          double rotationErrorToCoral =
+              -Units.degreesToRadians(LimelightHelpers.getTX(Constants.Vision.limelightCoralName));
+          drive.runVelocity(new ChassisSpeeds(0.0, 0.0, rotationErrorToCoral));
+        },
+        null,
+        () -> false,
+        drive);
   }
 }
