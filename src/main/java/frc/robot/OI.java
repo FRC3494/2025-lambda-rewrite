@@ -11,6 +11,18 @@ public final class OI {
   private static Joystick leftButtonBoard = new Joystick(1);
   private static Joystick rightButtonBoard = new Joystick(2);
 
+  public static CommandXboxController getPrimaryController() {
+    return primaryController;
+  }
+
+  public static Joystick getLeftButtonBoard() {
+    return leftButtonBoard;
+  }
+
+  public static Joystick getRightButtonBoard() {
+    return rightButtonBoard;
+  }
+
   public static void update() {
     eventLoop.poll();
   }

@@ -7,13 +7,17 @@
 
 package frc.robot;
 
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+
 import com.pathplanner.lib.auto.AutoBuilder;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
 import frc.robot.subsystems.climber.Climber;
@@ -34,7 +38,6 @@ import frc.robot.subsystems.superstructure.intake.Intake;
 import frc.robot.subsystems.vision.apriltagvision.AprilTagVision;
 import frc.robot.subsystems.vision.apriltagvision.AprilTagVisionIO;
 import frc.robot.subsystems.vision.apriltagvision.AprilTagVisionIOLimelight;
-import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -196,18 +199,49 @@ public class RobotContainer {
     // ==================== Ground Intake ====================
     OI.groundIntakeForTransfer()
         .onTrue(
-            superstructure.setCurrentTargetState(SuperstructureState.GROUND_INTAKE_FOR_TRANSFER))
+            Commands.sequence(
+                leds.setPattern(LEDLightPattern.INTAKING),
+                superstructure.setCurrentTargetState(
+                    SuperstructureState.GROUND_INTAKE_FOR_TRANSFER),
+                new WaitUntilCommand(groundIntake::distanceSensorTripped),
+                leds.setPattern(LEDLightPattern.HAS_GAMEPIECE)
+                    .onlyIf(OI.groundIntakeForTransfer()::getAsBoolean)))
         .onFalse(
-            superstructure.setCurrentTargetState(
-                SuperstructureState.DONE_WITH_GROUND_INTAKE_FOR_TRANSFER));
+            Commands.sequence(
+                superstructure
+                    .setCurrentTargetState(SuperstructureState.DONE_WITH_GROUND_INTAKE_FOR_TRANSFER)
+                    .onlyIf(OI.getPrimaryController()::isConnected),
+                leds.setPattern(LEDLightPattern.NONE)
+                    .onlyIf(() -> leds.getPattern() != LEDLightPattern.HAS_GAMEPIECE)));
 
     OI.groundIntakeForL1()
-        .onTrue(superstructure.setCurrentTargetState(SuperstructureState.GROUND_INTAKE_FOR_L1))
-        .onFalse(superstructure.setCurrentTargetState(SuperstructureState.GROUND_INTAKE_L1));
+        .onTrue(
+            Commands.sequence(
+                leds.setPattern(LEDLightPattern.INTAKING),
+                superstructure.setCurrentTargetState(SuperstructureState.GROUND_INTAKE_FOR_L1),
+                new WaitUntilCommand(groundIntake::distanceSensorTripped),
+                leds.setPattern(LEDLightPattern.HAS_GAMEPIECE)
+                    .onlyIf(OI.groundIntakeForL1()::getAsBoolean)))
+        .onFalse(
+            Commands.sequence(
+                superstructure
+                    .setCurrentTargetState(SuperstructureState.GROUND_INTAKE_L1)
+                    .onlyIf(OI.getPrimaryController()::isConnected),
+                leds.setPattern(LEDLightPattern.NONE)
+                    .onlyIf(() -> leds.getPattern() != LEDLightPattern.HAS_GAMEPIECE)));
 
     OI.groundIntakeL1Outtake()
-        .onTrue(superstructure.setCurrentTargetState(SuperstructureState.GROUND_INTAKE_L1_JERK))
-        .onFalse(superstructure.setCurrentTargetState(SuperstructureState.GROUND_INTAKE_L1));
+        .onTrue(
+            Commands.sequence(
+                superstructure.setCurrentTargetState(SuperstructureState.GROUND_INTAKE_L1_JERK),
+                new WaitUntilCommand(() -> !groundIntake.distanceSensorTripped()),
+                leds.setPattern(LEDLightPattern.DEPOSITED)))
+        .onFalse(
+            Commands.sequence(
+                superstructure
+                    .setCurrentTargetState(SuperstructureState.GROUND_INTAKE_L1)
+                    .onlyIf(OI.getLeftButtonBoard()::isConnected),
+                leds.setPattern(LEDLightPattern.NONE)));
 
     OI.groundIntakeManualOuttake()
         .onTrue(groundIntake.setIntakeSpeeds(0.2, -0.5))
