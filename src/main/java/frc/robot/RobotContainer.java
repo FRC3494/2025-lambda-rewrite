@@ -58,7 +58,7 @@ public class RobotContainer {
 
   private final Climber climber;
 
-  private final LEDs leds;
+  final LEDs leds;
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;

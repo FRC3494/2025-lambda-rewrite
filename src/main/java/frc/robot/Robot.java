@@ -7,12 +7,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.net.WebServer;
-import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.Threads;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.util.Elastic;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -20,6 +14,14 @@ import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 import org.littletonrobotics.urcl.URCL;
+
+import edu.wpi.first.net.WebServer;
+import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.Threads;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.leds.LEDs.LEDLightPattern;
+import frc.robot.util.Elastic;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -108,7 +110,9 @@ public class Robot extends LoggedRobot {
 
   /** This function is called once when the robot is disabled. */
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    robotContainer.leds.setPattern(LEDLightPattern.DISABLED).schedule();
+  }
 
   /** This function is called periodically when disabled. */
   @Override
@@ -118,6 +122,7 @@ public class Robot extends LoggedRobot {
   @Override
   public void autonomousInit() {
     Elastic.selectTab("Autonomous");
+    robotContainer.leds.setPattern(LEDLightPattern.NONE).schedule();
 
     autonomousCommand = robotContainer.getAutonomousCommand();
 
@@ -143,6 +148,7 @@ public class Robot extends LoggedRobot {
     }
 
     Elastic.selectTab("Teleoperated");
+    robotContainer.leds.setPattern(LEDLightPattern.NONE).schedule();
   }
 
   /** This function is called periodically during operator control. */
