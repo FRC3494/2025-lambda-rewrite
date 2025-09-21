@@ -7,10 +7,7 @@
 
 package frc.robot;
 
-import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
-
 import com.pathplanner.lib.auto.AutoBuilder;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -20,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.TeleopIntake;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
@@ -38,6 +36,7 @@ import frc.robot.subsystems.superstructure.intake.Intake;
 import frc.robot.subsystems.vision.apriltagvision.AprilTagVision;
 import frc.robot.subsystems.vision.apriltagvision.AprilTagVisionIO;
 import frc.robot.subsystems.vision.apriltagvision.AprilTagVisionIOLimelight;
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -139,6 +138,8 @@ public class RobotContainer {
     climber = new Climber();
 
     leds = new LEDs();
+
+    intake.setDefaultCommand(new TeleopIntake(intake, superstructure, leds));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());

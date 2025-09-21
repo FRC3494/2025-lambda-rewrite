@@ -238,6 +238,8 @@ public final class Constants {
     public static final boolean intakeMotorInverted = false;
     public static final IdleMode intakeMotorIdleMode = IdleMode.kBrake;
     public static final int intakeMotorCurrentLimit = 30;
+
+    public static final double deadband = 0.05;
   }
 
   public static class GroundIntake {

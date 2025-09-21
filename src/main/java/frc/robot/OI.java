@@ -66,6 +66,12 @@ public final class OI {
   // TODO: toggle defense sensor?
   // TODO: auto align
 
+  // ==================== Intake ====================
+  public static double getIntakeSpeed() {
+    return deadband(primaryController.getRightTriggerAxis(), Constants.Intake.deadband)
+        + deadband(rightButtonBoard.getRawAxis(0), Constants.Intake.deadband);
+  }
+
   // ==================== Stow ====================
   public static Trigger stow() {
     return rightButtonBoard.button(6, eventLoop).castTo(Trigger::new);
@@ -73,7 +79,7 @@ public final class OI {
 
   // ==================== Ground Intake ====================
   public static Trigger groundIntakeForTransfer() {
-    return primaryController.rightTrigger(0.05, eventLoop);
+    return primaryController.leftTrigger(0.05, eventLoop);
   }
 
   public static Trigger groundIntakeForL1() {

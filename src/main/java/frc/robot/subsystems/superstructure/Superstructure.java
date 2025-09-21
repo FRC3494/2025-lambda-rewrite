@@ -11,6 +11,7 @@ import frc.robot.subsystems.superstructure.elevator.Elevator;
 import frc.robot.subsystems.superstructure.groundintake.GroundIntake;
 import frc.robot.subsystems.superstructure.intake.Intake;
 import java.util.Optional;
+import lombok.Getter;
 import org.jgrapht.Graph;
 import org.jgrapht.alg.shortestpath.BFSShortestPath;
 import org.jgrapht.graph.DefaultDirectedGraph;
@@ -21,7 +22,7 @@ public class Superstructure extends SubsystemBase {
   private final Graph<SuperstructureState, SuperstructureStateEdge> graph =
       new DefaultDirectedGraph<>(SuperstructureStateEdge.class);
 
-  private SuperstructureState currentState = SuperstructureState.IDLE;
+  @Getter private SuperstructureState currentState = SuperstructureState.IDLE;
   private SuperstructureState nextState;
   private SuperstructureState currentTargetState = SuperstructureState.IDLE;
   private SuperstructureStateEdge currentEdge;
