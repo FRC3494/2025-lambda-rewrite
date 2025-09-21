@@ -136,7 +136,7 @@ public final class Constants {
             moduleTranslations);
   }
 
-  public static class AprilTagVision {
+  public static class Vision {
     // AprilTag layout
     public static AprilTagFieldLayout aprilTagLayout =
         AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeAndyMark);

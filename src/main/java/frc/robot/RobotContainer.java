@@ -33,9 +33,9 @@ import frc.robot.subsystems.superstructure.arm.Arm;
 import frc.robot.subsystems.superstructure.elevator.Elevator;
 import frc.robot.subsystems.superstructure.groundintake.GroundIntake;
 import frc.robot.subsystems.superstructure.intake.Intake;
-import frc.robot.subsystems.vision.apriltagvision.AprilTagVision;
-import frc.robot.subsystems.vision.apriltagvision.AprilTagVisionIO;
-import frc.robot.subsystems.vision.apriltagvision.AprilTagVisionIOLimelight;
+import frc.robot.subsystems.vision.Vision;
+import frc.robot.subsystems.vision.VisionIO;
+import frc.robot.subsystems.vision.VisionIOLimelight;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -47,7 +47,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
-  private final AprilTagVision aprilTagVision;
+  private final Vision aprilTagVision;
 
   private final Elevator elevator;
   private final Arm arm;
@@ -77,12 +77,12 @@ public class RobotContainer {
                   new ModuleIOSpark(2),
                   new ModuleIOSpark(3));
           aprilTagVision =
-              new AprilTagVision(
+              new Vision(
                   drive::addVisionMeasurement,
-                  new AprilTagVisionIOLimelight("limelight-right", drive::getRotation),
-                  new AprilTagVisionIOLimelight("limelight-left", drive::getRotation),
-                  new AprilTagVisionIOLimelight("limelight-swerve", drive::getRotation),
-                  new AprilTagVisionIOLimelight("limelight-barge", drive::getRotation));
+                  new VisionIOLimelight("limelight-right", drive::getRotation),
+                  new VisionIOLimelight("limelight-left", drive::getRotation),
+                  new VisionIOLimelight("limelight-swerve", drive::getRotation),
+                  new VisionIOLimelight("limelight-barge", drive::getRotation));
           break;
         }
 
@@ -97,13 +97,13 @@ public class RobotContainer {
                   new ModuleIOSim(),
                   new ModuleIOSim());
           aprilTagVision =
-              new AprilTagVision(
+              new Vision(
                   drive::addVisionMeasurement,
-                  new AprilTagVisionIO() {},
-                  new AprilTagVisionIO() {},
-                  new AprilTagVisionIO() {},
-                  new AprilTagVisionIO() {},
-                  new AprilTagVisionIO() {});
+                  new VisionIO() {},
+                  new VisionIO() {},
+                  new VisionIO() {},
+                  new VisionIO() {},
+                  new VisionIO() {});
           break;
         }
 
@@ -118,13 +118,13 @@ public class RobotContainer {
                   new ModuleIO() {},
                   new ModuleIO() {});
           aprilTagVision =
-              new AprilTagVision(
+              new Vision(
                   drive::addVisionMeasurement,
-                  new AprilTagVisionIO() {},
-                  new AprilTagVisionIO() {},
-                  new AprilTagVisionIO() {},
-                  new AprilTagVisionIO() {},
-                  new AprilTagVisionIO() {});
+                  new VisionIO() {},
+                  new VisionIO() {},
+                  new VisionIO() {},
+                  new VisionIO() {},
+                  new VisionIO() {});
           break;
         }
     }
@@ -170,6 +170,7 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
+  // @CodeScene(disable: "Large Method")
   private void configureButtonBindings() {
 
     // * ================ Drive ================

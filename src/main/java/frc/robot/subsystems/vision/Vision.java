@@ -5,7 +5,7 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-package frc.robot.subsystems.vision.apriltagvision;
+package frc.robot.subsystems.vision;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
@@ -18,25 +18,25 @@ import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.subsystems.vision.apriltagvision.AprilTagVisionIO.PoseObservationType;
+import frc.robot.subsystems.vision.VisionIO.PoseObservationType;
 import java.util.LinkedList;
 import java.util.List;
 import org.littletonrobotics.junction.Logger;
 
-public class AprilTagVision extends SubsystemBase {
+public class Vision extends SubsystemBase {
   private final VisionConsumer consumer;
-  private final AprilTagVisionIO[] io;
-  private final AprilTagVisionIOInputsAutoLogged[] inputs;
+  private final VisionIO[] io;
+  private final VisionIOInputsAutoLogged[] inputs;
   private final Alert[] disconnectedAlerts;
 
-  public AprilTagVision(VisionConsumer consumer, AprilTagVisionIO... io) {
+  public Vision(VisionConsumer consumer, VisionIO... io) {
     this.consumer = consumer;
     this.io = io;
 
     // Initialize inputs
-    this.inputs = new AprilTagVisionIOInputsAutoLogged[io.length];
+    this.inputs = new VisionIOInputsAutoLogged[io.length];
     for (int i = 0; i < inputs.length; i++) {
-      inputs[i] = new AprilTagVisionIOInputsAutoLogged();
+      inputs[i] = new VisionIOInputsAutoLogged();
     }
 
     // Initialize disconnected alerts
@@ -84,7 +84,7 @@ public class AprilTagVision extends SubsystemBase {
 
       // Add tag poses
       for (int tagId : inputs[cameraIndex].tagIds) {
-        var tagPose = Constants.AprilTagVision.aprilTagLayout.getTagPose(tagId);
+        var tagPose = Constants.Vision.aprilTagLayout.getTagPose(tagId);
         if (tagPose.isPresent()) {
           tagPoses.add(tagPose.get());
         }
@@ -97,17 +97,15 @@ public class AprilTagVision extends SubsystemBase {
             observation.tagCount() == 0 // Must have at least one tag
                 || (observation.tagCount() == 1
                     && observation.ambiguity()
-                        > Constants.AprilTagVision.maxAmbiguity) // Cannot be high ambiguity
+                        > Constants.Vision.maxAmbiguity) // Cannot be high ambiguity
                 || Math.abs(observation.pose().getZ())
-                    > Constants.AprilTagVision.maxZError // Must have realistic Z coordinate
+                    > Constants.Vision.maxZError // Must have realistic Z coordinate
 
                 // Must be within the field boundaries
                 || observation.pose().getX() < 0.0
-                || observation.pose().getX()
-                    > Constants.AprilTagVision.aprilTagLayout.getFieldLength()
+                || observation.pose().getX() > Constants.Vision.aprilTagLayout.getFieldLength()
                 || observation.pose().getY() < 0.0
-                || observation.pose().getY()
-                    > Constants.AprilTagVision.aprilTagLayout.getFieldWidth();
+                || observation.pose().getY() > Constants.Vision.aprilTagLayout.getFieldWidth();
 
         // Add pose to log
         robotPoses.add(observation.pose());
@@ -125,15 +123,15 @@ public class AprilTagVision extends SubsystemBase {
         // Calculate standard deviations
         double stdDevFactor =
             Math.pow(observation.averageTagDistance(), 2.0) / observation.tagCount();
-        double linearStdDev = Constants.AprilTagVision.linearStdDevBaseline * stdDevFactor;
-        double angularStdDev = Constants.AprilTagVision.angularStdDevBaseline * stdDevFactor;
+        double linearStdDev = Constants.Vision.linearStdDevBaseline * stdDevFactor;
+        double angularStdDev = Constants.Vision.angularStdDevBaseline * stdDevFactor;
         if (observation.type() == PoseObservationType.MEGATAG_2) {
-          linearStdDev *= Constants.AprilTagVision.linearStdDevMegatag2Factor;
-          angularStdDev *= Constants.AprilTagVision.angularStdDevMegatag2Factor;
+          linearStdDev *= Constants.Vision.linearStdDevMegatag2Factor;
+          angularStdDev *= Constants.Vision.angularStdDevMegatag2Factor;
         }
-        if (cameraIndex < Constants.AprilTagVision.cameraStdDevFactors.length) {
-          linearStdDev *= Constants.AprilTagVision.cameraStdDevFactors[cameraIndex];
-          angularStdDev *= Constants.AprilTagVision.cameraStdDevFactors[cameraIndex];
+        if (cameraIndex < Constants.Vision.cameraStdDevFactors.length) {
+          linearStdDev *= Constants.Vision.cameraStdDevFactors[cameraIndex];
+          angularStdDev *= Constants.Vision.cameraStdDevFactors[cameraIndex];
         }
 
         // Send vision observation

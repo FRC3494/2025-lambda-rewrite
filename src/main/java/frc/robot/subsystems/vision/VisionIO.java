@@ -5,15 +5,15 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-package frc.robot.subsystems.vision.apriltagvision;
+package frc.robot.subsystems.vision;
 
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import org.littletonrobotics.junction.AutoLog;
 
-public interface AprilTagVisionIO {
+public interface VisionIO {
   @AutoLog
-  public static class AprilTagVisionIOInputs {
+  public static class VisionIOInputs {
     public boolean connected = false;
     public TargetObservation latestTargetObservation =
         new TargetObservation(Rotation2d.kZero, Rotation2d.kZero);
@@ -39,5 +39,5 @@ public interface AprilTagVisionIO {
     PHOTONVISION
   }
 
-  public default void updateInputs(AprilTagVisionIOInputs inputs) {}
+  public default void updateInputs(VisionIOInputs inputs) {}
 }
