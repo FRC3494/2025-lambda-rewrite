@@ -13,6 +13,8 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -20,6 +22,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
+import lombok.AllArgsConstructor;
 
 /**
  * This class defines the runtime mode used by AdvantageKit. The mode is always "real" when running
@@ -156,6 +159,89 @@ public final class Constants {
                 driveMotorCurrentLimit,
                 1),
             moduleTranslations);
+  }
+
+  public static final class AutoAlign {
+    // TODO: tune
+    public static final double linearP = 0.0;
+    public static final double linearI = 0.0;
+    public static final double linearD = 0.0;
+    public static final double linearTolerance = 0.0; // TODO: units?
+    public static final double linearMaxVelocity = 0.0;
+    public static final double linearMaxAcceleration = 0.0;
+
+    // TODO: tune
+    public static final double angularP = 0.0;
+    public static final double angularI = 0.0;
+    public static final double angularD = 0.0;
+    public static final double angularTolerance = Units.degreesToRadians(0.0);
+    public static final double angularMaxVelocity = 0.0;
+    public static final double angularMaxAcceleration = 0.0;
+
+    // * Midline is 158.5in in the Y direction
+    // * Middle of the reef is 176.75in in the X direction
+
+    // * Reef locations follow FMS naming system
+
+    //            H    G
+    //         ____________
+    //     I  /            \  F
+    //       /              \
+    //   J  /                \  E
+    //     /                  \
+    //     \                  /
+    //   K  \                /  D
+    //       \              /
+    //     L  \____________/  C
+    //
+    //            A    B
+
+    @AllArgsConstructor
+    public static enum ReefCoralLocation {
+      A(goalPose2d(128.189, 166.221, 0)),
+      B(goalPose2d(128.189, 153.3071, 0)),
+      C(goalPose2d(148.8189, 121.2598, 60)),
+      D(goalPose2d(157.0079, 113.7008, 60)),
+      E(goalPose2d(196.063, 113.3858, 120)),
+      F(goalPose2d(205.9055, 119.2913, 120)),
+      G(goalPose2d(224.8031, 151.5748, 180)),
+      H(goalPose2d(225.1969, 164.1732, 180)),
+      I(goalPose2d(205.9055, 197.6378, -120)),
+      J(goalPose2d(194.8819, 203.937, -120)),
+      K(goalPose2d(159.4488, 202.7559, -60)),
+      L(goalPose2d(148.0315, 148.2297, -60));
+
+      public final Pose2d pose;
+    }
+
+    @AllArgsConstructor
+    public static enum ReefAlgaeLocation {
+      AB(averagePoses(ReefCoralLocation.A.pose, ReefCoralLocation.B.pose)),
+      CD(averagePoses(ReefCoralLocation.C.pose, ReefCoralLocation.D.pose)),
+      EF(averagePoses(ReefCoralLocation.E.pose, ReefCoralLocation.F.pose)),
+      GH(averagePoses(ReefCoralLocation.G.pose, ReefCoralLocation.H.pose)),
+      IJ(averagePoses(ReefCoralLocation.I.pose, ReefCoralLocation.J.pose)),
+      KL(averagePoses(ReefCoralLocation.K.pose, ReefCoralLocation.L.pose));
+
+      public final Pose2d pose;
+    }
+
+    public static Pose2d bargeLocation = goalPose2d(290.9449, 212.5984, -29.7);
+
+    private static Pose2d goalPose2d(double xInches, double yInches, double rotationDegrees) {
+      return new Pose2d(
+          Units.inchesToMeters(xInches),
+          Units.inchesToMeters(yInches),
+          Rotation2d.fromRadians(
+              MathUtil.angleModulus(Units.degreesToRadians(-90 + rotationDegrees))));
+    }
+
+    private static final Pose2d averagePoses(Pose2d a, Pose2d b) {
+      return new Pose2d(
+          (a.getX() + b.getX()) / 2.0,
+          (a.getY() + b.getY()) / 2.0,
+          a.getRotation().plus(b.getRotation()).div(2.0));
+    }
   }
 
   public static class Vision {

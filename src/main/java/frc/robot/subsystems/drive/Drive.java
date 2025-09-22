@@ -189,14 +189,7 @@ public class Drive extends SubsystemBase {
     // Calculate module setpoints
     ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(speeds, 0.02);
     SwerveModuleState[] setpointStates = kinematics.toSwerveModuleStates(discreteSpeeds);
-
-    double maxLinearSpeed =
-        switch (Constants.driveMode) {
-          case NORMAL -> Constants.Drive.maxLinearSpeedNormal;
-          case DEMO, DEMO_AUTOALIGN -> Constants.Drive.maxLinearSpeedDemo;
-          case TRAINING, TRAINING_AUTOALIGN -> Constants.Drive.maxLinearSpeedTraining;
-        };
-    SwerveDriveKinematics.desaturateWheelSpeeds(setpointStates, maxLinearSpeed);
+    SwerveDriveKinematics.desaturateWheelSpeeds(setpointStates, getMaxLinearSpeedMetersPerSec());
 
     // Log unoptimized setpoints
     Logger.recordOutput("SwerveStates/Setpoints", setpointStates);

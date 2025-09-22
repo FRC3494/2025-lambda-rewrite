@@ -1,12 +1,13 @@
 package frc.robot.commands;
 
+import java.util.Set;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.OI;
 import frc.robot.subsystems.leds.LEDs;
 import frc.robot.subsystems.superstructure.Superstructure;
 import frc.robot.subsystems.superstructure.SuperstructureState;
 import frc.robot.subsystems.superstructure.intake.Intake;
-import java.util.Set;
 
 public class TeleopIntake extends Command {
   private Intake intake;
@@ -44,15 +45,13 @@ public class TeleopIntake extends Command {
     }
   }
 
+  @Override
   public boolean isFinished() {
     return false;
   }
 
-  public void end() {
+  @Override
+  public void end(boolean interrupted) {
     intake.setSpeed(0.0);
-  }
-
-  public void interrupted() {
-    end();
   }
 }

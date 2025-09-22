@@ -67,10 +67,21 @@ public final class OI {
     public static Trigger coral() {
       return primaryController.b(eventLoop);
     }
+
+    public static Trigger reefLeft() {
+      return primaryController.leftBumper(eventLoop);
+    }
+
+    public static Trigger reefRight() {
+      return primaryController.rightBumper(eventLoop);
+    }
+
+    public static Trigger barge() {
+      return primaryController.x(eventLoop);
+    }
   }
 
   // TODO: toggle defense sensor?
-  // TODO: auto align
 
   // ==================== Intake ====================
   public static double getIntakeSpeed() {

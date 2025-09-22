@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.commands.AutoAlign;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.TeleopIntake;
 import frc.robot.subsystems.climber.Climber;
@@ -199,18 +200,33 @@ public class RobotContainer {
     // ==================== Auto-Align ====================
     OI.AutoAlign.coral()
         .onTrue(
+            Commands.runOnce(() -> drive.setDefaultCommand(DriveCommands.coralAutoAlign(drive))))
+        .onFalse(Commands.runOnce(() -> drive.setDefaultCommand(normalDriveCommand)));
+
+    OI.AutoAlign.reefLeft()
+        .or(OI.AutoAlign.reefRight())
+        .onTrue(
             Commands.runOnce(
-                () -> {
-                  drive.setDefaultCommand(DriveCommands.coralAutoAlign(drive));
-                }))
-        .onFalse(
+                () ->
+                    drive.setDefaultCommand(
+                        new AutoAlign(
+                            drive,
+                            () ->
+                                AutoAlign.getClosestReefLocationBlue(
+                                    drive.getPose(),
+                                    OI.AutoAlign.reefLeft().getAsBoolean(),
+                                    OI.AutoAlign.reefRight().getAsBoolean())))))
+        .onFalse(Commands.runOnce(() -> drive.setDefaultCommand(normalDriveCommand)));
+
+    OI.AutoAlign.barge()
+        .onTrue(
             Commands.runOnce(
-                () -> {
-                  drive.setDefaultCommand(normalDriveCommand);
-                }));
+                () ->
+                    drive.setDefaultCommand(
+                        new AutoAlign(drive, () -> Constants.AutoAlign.bargeLocation))))
+        .onFalse(Commands.runOnce(() -> drive.setDefaultCommand(normalDriveCommand)));
 
     // TODO: toggle defense sensor?
-    // TODO: auto align
 
     // ==================== Stow ====================
     OI.stow().onTrue(superstructure.setCurrentTargetState(SuperstructureState.STOW));
