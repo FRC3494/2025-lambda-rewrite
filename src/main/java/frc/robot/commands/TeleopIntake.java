@@ -1,13 +1,12 @@
 package frc.robot.commands;
 
-import java.util.Set;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.OI;
 import frc.robot.subsystems.leds.LEDs;
 import frc.robot.subsystems.superstructure.Superstructure;
 import frc.robot.subsystems.superstructure.SuperstructureState;
 import frc.robot.subsystems.superstructure.intake.Intake;
+import java.util.Set;
 
 public class TeleopIntake extends Command {
   private Intake intake;

@@ -1,10 +1,5 @@
 package frc.robot.commands;
 
-import java.util.Optional;
-import java.util.function.Supplier;
-
-import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -17,6 +12,9 @@ import frc.robot.Constants;
 import frc.robot.Constants.AutoAlign.ReefAlgaeLocation;
 import frc.robot.Constants.AutoAlign.ReefCoralLocation;
 import frc.robot.subsystems.drive.Drive;
+import java.util.Optional;
+import java.util.function.Supplier;
+import org.littletonrobotics.junction.Logger;
 
 public class AutoAlign extends Command {
   private final Drive drive;

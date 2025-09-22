@@ -196,7 +196,7 @@ public enum SuperstructureState {
           .intakeSpeed(0.0)
           .groundIntakeAngle(0.05)
           .groundIntakeFrontSpeed(0.0)
-          .groundIntakeBackSpeed(0.0) // TODO: Climber
+          .groundIntakeBackSpeed(0.0)
           .build()),
   CLIMB(
       SuperstructureStateData.builder()
@@ -205,7 +205,7 @@ public enum SuperstructureState {
           .intakeSpeed(0.0)
           .groundIntakeAngle(0.31)
           .groundIntakeFrontSpeed(0.0)
-          .groundIntakeBackSpeed(0.0) // TODO: Climber
+          .groundIntakeBackSpeed(0.0)
           .build());
 
   public static final class IntakeSpeeds {

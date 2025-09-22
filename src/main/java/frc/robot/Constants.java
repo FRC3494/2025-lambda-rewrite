@@ -10,7 +10,6 @@ package frc.robot;
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.RobotConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.MathUtil;
@@ -67,8 +66,7 @@ public final class Constants {
     public static final double maxAngularSpeedTraining =
         Constants.Drive.maxLinearSpeedTraining / Constants.Drive.driveBaseRadius;
 
-    public static final double odometryFrequency =
-        100.0; // Hz //TODO: research what this actually is
+    public static final double odometryFrequency = 250.0; // Hz
     public static final double trackWidth = Units.inchesToMeters(20.75);
     public static final double wheelBase = Units.inchesToMeters(20.75);
     public static final double driveBaseRadius = Math.hypot(trackWidth / 2.0, wheelBase / 2.0);
@@ -99,11 +97,16 @@ public final class Constants {
     public static final int backLeftTurnCanId = 2;
     public static final int backRightTurnCanId = 3;
 
+    public static final int frontLeftTurnEncoderId = 3;
+    public static final int frontRightTurnEncoderId = 2;
+    public static final int backLeftTurnEncoderId = 1;
+    public static final int backRightTurnEncoderId = 0;
+
     // Drive motor configuration
     public static final int driveMotorCurrentLimit = 50; // TODO: slip current test
     public static final double wheelRadiusMeters = Units.inchesToMeters(1.6845632679942868);
     public static final double driveMotorReduction =
-        (50.0 / 14.0) * (19.0 / 25.0) * (45.0 / 15.0); // L1 Gearing //TODO: might be L2? I forgot
+        (50.0 / 14.0) * (19.0 / 25.0) * (45.0 / 15.0); // L1 Gearing
     public static final DCMotor driveGearbox = DCMotor.getNeoVortex(1);
 
     // Drive encoder configuration
@@ -124,11 +127,11 @@ public final class Constants {
     public static final double driveSimKs = 0.0;
     public static final double driveSimKv = 0.0789;
 
-    // Turn motor configuration //TODO: verify
-    public static final boolean turnInverted = false;
-    public static final int turnMotorCurrentLimit = 20;
-    public static final double turnMotorReduction = 9424.0 / 203.0;
-    public static final DCMotor turnGearbox = DCMotor.getNeo550(1);
+    // Turn motor configuration
+    public static final boolean turnInverted = true;
+    public static final int turnMotorCurrentLimit = 30;
+    public static final double turnMotorReduction = 150.0 / 7.0;
+    public static final DCMotor turnGearbox = DCMotor.getNeoVortex(1);
 
     // Turn encoder configuration //TODO: verify
     public static final boolean turnEncoderInverted = true;
