@@ -10,6 +10,7 @@ package frc.robot;
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.RobotConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -40,8 +41,29 @@ public final class Constants {
     REPLAY
   }
 
+  public static final DriveMode driveMode = DriveMode.NORMAL;
+
+  public static enum DriveMode {
+    NORMAL,
+    DEMO,
+    DEMO_AUTOALIGN,
+    TRAINING,
+    TRAINING_AUTOALIGN
+  }
+
   public static class Drive {
-    public static final double maxSpeedMetersPerSec = Units.feetToMeters(14.5);
+    public static final double maxLinearSpeedNormal = Units.feetToMeters(14.5);
+    public static final double maxLinearSpeedDemo = Units.feetToMeters(maxLinearSpeedNormal) * 0.4;
+    public static final double maxLinearSpeedTraining =
+        Units.feetToMeters(maxLinearSpeedDemo) * 1.0;
+
+    public static final double maxAngularSpeedNormal =
+        Constants.Drive.maxLinearSpeedNormal / Constants.Drive.driveBaseRadius;
+    public static final double maxAngularSpeedDemo =
+        Constants.Drive.maxLinearSpeedDemo / Constants.Drive.driveBaseRadius;
+    public static final double maxAngularSpeedTraining =
+        Constants.Drive.maxLinearSpeedTraining / Constants.Drive.driveBaseRadius;
+
     public static final double odometryFrequency =
         100.0; // Hz //TODO: research what this actually is
     public static final double trackWidth = Units.inchesToMeters(20.75);
@@ -128,7 +150,7 @@ public final class Constants {
             robotMOI,
             new ModuleConfig(
                 wheelRadiusMeters,
-                maxSpeedMetersPerSec,
+                maxLinearSpeedNormal,
                 wheelCOF,
                 driveGearbox.withReduction(driveMotorReduction),
                 driveMotorCurrentLimit,

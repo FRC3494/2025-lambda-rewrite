@@ -9,11 +9,18 @@ package frc.robot.subsystems.drive;
 
 import static edu.wpi.first.units.Units.Volts;
 
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.pathplanner.lib.util.PathPlannerLogging;
+
 import edu.wpi.first.hal.FRCNetComm.tInstances;
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
 import edu.wpi.first.hal.HAL;
@@ -38,10 +45,6 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.Constants.Mode;
 import frc.robot.util.LocalADStarAK;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-import org.littletonrobotics.junction.AutoLogOutput;
-import org.littletonrobotics.junction.Logger;
 
 public class Drive extends SubsystemBase {
   static final Lock odometryLock = new ReentrantLock();
@@ -186,8 +189,14 @@ public class Drive extends SubsystemBase {
     // Calculate module setpoints
     ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(speeds, 0.02);
     SwerveModuleState[] setpointStates = kinematics.toSwerveModuleStates(discreteSpeeds);
-    SwerveDriveKinematics.desaturateWheelSpeeds(
-        setpointStates, Constants.Drive.maxSpeedMetersPerSec);
+
+    double maxLinearSpeed =
+        switch (Constants.driveMode) {
+          case NORMAL -> Constants.Drive.maxLinearSpeedNormal;
+          case DEMO, DEMO_AUTOALIGN -> Constants.Drive.maxLinearSpeedDemo;
+          case TRAINING, TRAINING_AUTOALIGN -> Constants.Drive.maxLinearSpeedTraining;
+        };
+    SwerveDriveKinematics.desaturateWheelSpeeds(setpointStates, maxLinearSpeed);
 
     // Log unoptimized setpoints
     Logger.recordOutput("SwerveStates/Setpoints", setpointStates);
@@ -309,11 +318,19 @@ public class Drive extends SubsystemBase {
 
   /** Returns the maximum linear speed in meters per sec. */
   public double getMaxLinearSpeedMetersPerSec() {
-    return Constants.Drive.maxSpeedMetersPerSec;
+    return switch (Constants.driveMode) {
+      case NORMAL -> Constants.Drive.maxLinearSpeedNormal;
+      case DEMO, DEMO_AUTOALIGN -> Constants.Drive.maxLinearSpeedDemo;
+      case TRAINING, TRAINING_AUTOALIGN -> Constants.Drive.maxLinearSpeedTraining;
+    };
   }
 
   /** Returns the maximum angular speed in radians per sec. */
   public double getMaxAngularSpeedRadPerSec() {
-    return Constants.Drive.maxSpeedMetersPerSec / Constants.Drive.driveBaseRadius;
+    return switch (Constants.driveMode) {
+      case NORMAL -> Constants.Drive.maxAngularSpeedNormal;
+      case DEMO, DEMO_AUTOALIGN -> Constants.Drive.maxAngularSpeedDemo;
+      case TRAINING, TRAINING_AUTOALIGN -> Constants.Drive.maxAngularSpeedTraining;
+    };
   }
 }
