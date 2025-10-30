@@ -250,7 +250,8 @@ public class Superstructure extends SubsystemBase {
     }
 
     Logger.recordOutput("Superstructure/CurrentState", currentState.toString());
-    Logger.recordOutput("Superstructure/NextState", nextState.toString());
+    Logger.recordOutput(
+        "Superstructure/NextState", nextState == null ? "null" : nextState.toString());
     Logger.recordOutput("Superstructure/TargetState", currentTargetState.toString());
   }
 
