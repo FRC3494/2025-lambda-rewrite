@@ -1,8 +1,10 @@
 package frc.robot.subsystems.superstructure;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
+@AllArgsConstructor
 public enum SuperstructureState {
   IDLE(SuperstructureStateData.builder().build()),
 
@@ -221,8 +223,4 @@ public enum SuperstructureState {
   }
 
   private final SuperstructureStateData value;
-
-  private SuperstructureState(SuperstructureStateData value) {
-    this.value = value;
-  }
 }
