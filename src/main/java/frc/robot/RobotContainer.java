@@ -14,10 +14,10 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.AutoAlign;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.RobotCommands;
 import frc.robot.commands.TeleopIntake;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.drive.Drive;
@@ -27,9 +27,7 @@ import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOSpark;
 import frc.robot.subsystems.leds.LEDs;
-import frc.robot.subsystems.leds.LEDs.LEDLightPattern;
 import frc.robot.subsystems.superstructure.Superstructure;
-import frc.robot.subsystems.superstructure.SuperstructureState;
 import frc.robot.subsystems.superstructure.arm.Arm;
 import frc.robot.subsystems.superstructure.elevator.Elevator;
 import frc.robot.subsystems.superstructure.groundintake.GroundIntake;
@@ -50,15 +48,17 @@ public class RobotContainer {
   private final Drive drive;
   private final Vision aprilTagVision;
 
+  private final Superstructure superstructure;
   private final Elevator elevator;
   private final Arm arm;
   private final Intake intake;
   private final GroundIntake groundIntake;
-  private final Superstructure superstructure;
 
   private final Climber climber;
 
   final LEDs leds;
+
+  private final RobotCommands robotCommands;
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -141,6 +141,10 @@ public class RobotContainer {
     leds = new LEDs();
 
     intake.setDefaultCommand(new TeleopIntake(intake, superstructure, leds));
+
+    robotCommands =
+        new RobotCommands(
+            drive, superstructure, elevator, arm, intake, groundIntake, climber, leds);
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -227,101 +231,61 @@ public class RobotContainer {
     // TODO: toggle defense sensor?
 
     // ==================== Stow ====================
-    OI.stow().onTrue(superstructure.setCurrentTargetState(SuperstructureState.STOW));
+    OI.stow().onTrue(robotCommands.stow());
 
     // ==================== Ground Intake ====================
     OI.groundIntakeForTransfer()
-        .onTrue(
-            Commands.sequence(
-                leds.setPattern(LEDLightPattern.INTAKING),
-                superstructure.setCurrentTargetState(
-                    SuperstructureState.GROUND_INTAKE_FOR_TRANSFER),
-                new WaitUntilCommand(groundIntake::distanceSensorTripped),
-                leds.setPattern(LEDLightPattern.HAS_GAMEPIECE)
-                    .onlyIf(OI.groundIntakeForTransfer()::getAsBoolean)))
-        .onFalse(
-            Commands.sequence(
-                superstructure
-                    .setCurrentTargetState(SuperstructureState.DONE_WITH_GROUND_INTAKE_FOR_TRANSFER)
-                    .onlyIf(OI.getPrimaryController()::isConnected),
-                leds.setPattern(LEDLightPattern.NONE)
-                    .onlyIf(() -> leds.getPattern() != LEDLightPattern.HAS_GAMEPIECE)));
+        .onTrue(robotCommands.groundIntakeForTransferRising())
+        .onFalse(robotCommands.groundIntakeForTransferFalling());
 
     OI.groundIntakeForL1()
-        .onTrue(
-            Commands.sequence(
-                leds.setPattern(LEDLightPattern.INTAKING),
-                superstructure.setCurrentTargetState(SuperstructureState.GROUND_INTAKE_FOR_L1),
-                new WaitUntilCommand(groundIntake::distanceSensorTripped),
-                leds.setPattern(LEDLightPattern.HAS_GAMEPIECE)
-                    .onlyIf(OI.groundIntakeForL1()::getAsBoolean)))
-        .onFalse(
-            Commands.sequence(
-                superstructure
-                    .setCurrentTargetState(SuperstructureState.GROUND_INTAKE_L1)
-                    .onlyIf(OI.getPrimaryController()::isConnected),
-                leds.setPattern(LEDLightPattern.NONE)
-                    .onlyIf(() -> leds.getPattern() != LEDLightPattern.HAS_GAMEPIECE)));
+        .onTrue(robotCommands.groundIntakeForL1Rising())
+        .onFalse(robotCommands.groundIntakeForL1Falling());
 
     OI.groundIntakeL1Outtake()
-        .onTrue(
-            Commands.sequence(
-                superstructure.setCurrentTargetState(SuperstructureState.GROUND_INTAKE_L1_JERK),
-                new WaitUntilCommand(() -> !groundIntake.distanceSensorTripped()),
-                leds.setPattern(LEDLightPattern.DEPOSITED)))
-        .onFalse(
-            Commands.sequence(
-                superstructure
-                    .setCurrentTargetState(SuperstructureState.GROUND_INTAKE_L1)
-                    .onlyIf(OI.getLeftButtonBoard()::isConnected),
-                leds.setPattern(LEDLightPattern.NONE)));
+        .onTrue(robotCommands.groundIntakeL1OuttakeRising())
+        .onFalse(robotCommands.groundIntakeL1OuttakeFalling());
 
     OI.groundIntakeManualOuttake()
-        .onTrue(groundIntake.setIntakeSpeeds(0.2, -0.5))
-        .onFalse(
-            Commands.sequence(
-                superstructure.resumeCurrentState(),
-                // Comment for autoformat
-                leds.setPattern(LEDLightPattern.NONE)));
+        .onTrue(robotCommands.groundIntakeManualOuttakeRising())
+        .onFalse(robotCommands.groundIntakeManualOuttakeFalling());
 
     // ==================== Coral Intake w/ Arm ====================
-    OI.feeder().onTrue(superstructure.setCurrentTargetState(SuperstructureState.FEEDER));
+    OI.feeder().onTrue(robotCommands.feeder());
 
     // ==================== Coral Outtake w/ Arm ====================
-    OI.armL1Coral().onTrue(superstructure.setCurrentTargetState(SuperstructureState.ARM_L1_CORAL));
+    OI.armL1Coral().onTrue(robotCommands.armL1Coral());
 
-    OI.L2Coral().onTrue(superstructure.setCurrentTargetState(SuperstructureState.L2_CORAL));
+    OI.L2Coral().onTrue(robotCommands.L2Coral());
 
-    OI.L3Coral().onTrue(superstructure.setCurrentTargetState(SuperstructureState.L3_CORAL));
+    OI.L3Coral().onTrue(robotCommands.L3Coral());
 
     // ==================== Algae Intake ====================
     OI.L2Algae()
-        .onTrue(superstructure.setCurrentTargetState(SuperstructureState.L2_ALGAE))
-        .onFalse(superstructure.setCurrentTargetState(SuperstructureState.L2_ALGAE_UP));
+        // Comment for autoformat
+        .onTrue(robotCommands.L2AlgaeRising())
+        .onFalse(robotCommands.L2AlgaeFalling());
 
     OI.L3Algae()
-        .onTrue(superstructure.setCurrentTargetState(SuperstructureState.L3_ALGAE))
-        .onFalse(superstructure.setCurrentTargetState(SuperstructureState.L3_ALGAE_UP));
+        // Comment for autoformat
+        .onTrue(robotCommands.L3AlgaeRising())
+        .onFalse(robotCommands.L3AlgaeFalling());
 
     // ==================== Algae Outtake ====================
-    OI.processor().onTrue(superstructure.setCurrentTargetState(SuperstructureState.PROCESSOR));
+    OI.processor().onTrue(robotCommands.processor());
 
-    OI.preBarge().onTrue(superstructure.setCurrentTargetState(SuperstructureState.PRE_BARGE));
+    OI.preBarge().onTrue(robotCommands.preBarge());
 
-    OI.barge().onTrue(superstructure.setCurrentTargetState(SuperstructureState.BARGE));
+    OI.barge().onTrue(robotCommands.barge());
 
     // ==================== Climb ====================
-    OI.preClimb()
-        .onTrue(
-            Commands.sequence(
-                superstructure.setCurrentTargetState(SuperstructureState.PRE_CLIMB),
-                climber.setTargetPosition(Constants.Climber.preClimbAngle)));
+    OI.preClimb().onTrue(robotCommands.preClimb());
 
-    OI.climbStage1().onTrue(climber.setTargetPosition(Constants.Climber.stage1Angle));
+    OI.climbStage1().onTrue(robotCommands.climbStage1());
 
-    OI.climbStage2().onTrue(climber.setTargetPosition(Constants.Climber.stage2Angle));
+    OI.climbStage2().onTrue(robotCommands.climbStage2());
 
-    OI.climbStage3().onTrue(superstructure.setCurrentTargetState(SuperstructureState.CLIMB));
+    OI.climbStage3().onTrue(robotCommands.climbStage3());
   }
 
   /**
